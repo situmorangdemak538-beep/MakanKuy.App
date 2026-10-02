@@ -1,0 +1,25 @@
+# OS Junk Files
+.DS_Store
+Thumbs.db
+
+# Laravel / Backend Junk
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/storage/*.key
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+
+# Flutter / Mobile Junk
+mobile/.dart_tool/
+mobile/.idea/
+mobile/.vscode/
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/ios/Flutter/App.framework
+mobile/ios/Flutter/Flutter.framework
+
+# Environment & Secret Files
+*.env
