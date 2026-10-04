@@ -1,23 +1,11 @@
-class Category {
+class CategoryModel {
   final int id;
   final String name;
+  final String icon;
 
-  const Category({
+  const CategoryModel({
     required this.id,
     required this.name,
+    required this.icon,
   });
-
-  factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(
-      id: int.tryParse('${json['id']}') ?? 0,
-      name: '${json['name'] ?? ''}',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-    };
-  }
 }

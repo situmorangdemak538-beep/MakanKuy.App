@@ -1,31 +1,36 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:makankuy/config/api_config.dart';
+
 class ApiService {
-  Future<Map<String, dynamic>> get(String endpoint) async {
-    throw UnimplementedError(
-      'API belum dihubungkan. Endpoint: $endpoint',
+  Future<dynamic> get(String endpoint) async {
+    final response = await http.get(
+      Uri.parse('${ApiConfig.baseUrl}$endpoint'),
+      headers: {'Accept': 'application/json'},
     );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body);
+    }
+    throw Exception('Request gagal (${response.statusCode})');
   }
 
-  Future<Map<String, dynamic>> post(
+  Future<dynamic> post(
     String endpoint,
-    Map<String, dynamic> data,
+    Map<String, dynamic> body,
   ) async {
-    throw UnimplementedError(
-      'API belum dihubungkan. Endpoint: $endpoint',
+    final response = await http.post(
+      Uri.parse('${ApiConfig.baseUrl}$endpoint'),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
     );
-  }
 
-  Future<Map<String, dynamic>> put(
-    String endpoint,
-    Map<String, dynamic> data,
-  ) async {
-    throw UnimplementedError(
-      'API belum dihubungkan. Endpoint: $endpoint',
-    );
-  }
-
-  Future<void> delete(String endpoint) async {
-    throw UnimplementedError(
-      'API belum dihubungkan. Endpoint: $endpoint',
-    );
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body);
+    }
+    throw Exception('Request gagal (${response.statusCode})');
   }
 }

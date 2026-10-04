@@ -1,30 +1,21 @@
 import 'package:flutter/foundation.dart';
-
-import '../models/menu_model.dart';
-import '../services/menu_service.dart';
+import 'package:makankuy/models/menu_model.dart';
+import 'package:makankuy/services/menu_service.dart';
 
 class MenuProvider extends ChangeNotifier {
   final MenuService _service = MenuService();
 
-  List<Menu> _menus = [];
-  bool _isLoading = false;
-  String? _error;
-
-  List<Menu> get menus => _menus;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
+  List<MenuModel> menus = [];
+  bool loading = false;
 
   Future<void> loadMenus(int restaurantId) async {
-    _isLoading = true;
-    _error = null;
+    loading = true;
     notifyListeners();
 
     try {
-      _menus = await _service.getMenus(restaurantId);
-    } catch (e) {
-      _error = e.toString();
+      menus = await _service.getMenus(restaurantId);
     } finally {
-      _isLoading = false;
+      loading = false;
       notifyListeners();
     }
   }

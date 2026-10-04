@@ -1,7 +1,6 @@
 name: makankuy
-description: Aplikasi informasi dan reservasi restoran MakanKuy.
+description: Aplikasi informasi dan reservasi restoran MakanKuy
 publish_to: "none"
-
 version: 1.0.0+1
 
 environment:
@@ -10,7 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.8
   provider: ^6.1.2
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

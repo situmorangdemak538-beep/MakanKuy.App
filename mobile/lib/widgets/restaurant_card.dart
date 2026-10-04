@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../models/restaurant_model.dart';
-import '../utils/colors.dart';
+import 'package:makankuy/models/restaurant_model.dart';
+import 'package:makankuy/utils/colors.dart';
 
 class RestaurantCard extends StatelessWidget {
-  final Restaurant restaurant;
+  final RestaurantModel restaurant;
   final VoidCallback? onTap;
 
   const RestaurantCard({
@@ -15,74 +14,85 @@ class RestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withAlpha(25),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.restaurant,
-                  size: 40,
-                  color: AppColors.primary,
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.06),
+              blurRadius: 12,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 155,
+              width: double.infinity,
+              child: Image.network(
+                restaurant.imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  color: AppColors.cream,
+                  child: const Icon(
+                    Icons.restaurant,
+                    size: 55,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      restaurant.name,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    restaurant.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 5),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          size: 17,
-                          color: Colors.amber,
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      const Icon(Icons.star, size: 17, color: AppColors.secondary),
+                      const SizedBox(width: 4),
+                      Text('${restaurant.rating}'),
+                      const SizedBox(width: 12),
+                      const Icon(Icons.location_on, size: 16, color: AppColors.primary),
+                      const SizedBox(width: 3),
+                      Text('${restaurant.distance.toStringAsFixed(1)} km'),
+                      const Spacer(),
+                      Text(
+                        'Rp${restaurant.averagePrice ~/ 1000}k+',
+                        style: const TextStyle(
+                          color: AppColors.primaryDark,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(width: 4),
-                        Text('${restaurant.rating}'),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      restaurant.category,
-                      style: const TextStyle(
-                        color: AppColors.primary,
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      restaurant.address,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.textGrey,
-                      ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                  const SizedBox(height: 7),
+                  Text(
+                    restaurant.address,
+                    style: const TextStyle(color: AppColors.grey),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

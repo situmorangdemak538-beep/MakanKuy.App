@@ -1,36 +1,22 @@
 import 'package:flutter/foundation.dart';
-
-import '../models/user_model.dart';
-import '../services/auth_service.dart';
+import 'package:makankuy/models/user_model.dart';
+import 'package:makankuy/services/auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _service = AuthService();
 
-  User? _user;
-  bool _isLoading = false;
-  String? _error;
+  UserModel? user;
+  bool loading = false;
 
-  User? get user => _user;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-  bool get isLoggedIn => _user != null;
-
-  Future<bool> login(
-    String email,
-    String password,
-  ) async {
-    _isLoading = true;
-    _error = null;
+  Future<bool> login(String email, String password) async {
+    loading = true;
     notifyListeners();
 
     try {
-      _user = await _service.login(email, password);
+      user = await _service.login(email, password);
       return true;
-    } catch (e) {
-      _error = e.toString();
-      return false;
     } finally {
-      _isLoading = false;
+      loading = false;
       notifyListeners();
     }
   }
@@ -39,32 +25,21 @@ class AuthProvider extends ChangeNotifier {
     String name,
     String email,
     String password,
-    String role,
   ) async {
-    _isLoading = true;
-    _error = null;
+    loading = true;
     notifyListeners();
 
     try {
-      _user = await _service.register(
-        name,
-        email,
-        password,
-        role,
-      );
+      user = await _service.register(name, email, password);
       return true;
-    } catch (e) {
-      _error = e.toString();
-      return false;
     } finally {
-      _isLoading = false;
+      loading = false;
       notifyListeners();
     }
   }
 
-  Future<void> logout() async {
-    await _service.logout();
-    _user = null;
+  void logout() {
+    user = null;
     notifyListeners();
   }
 }

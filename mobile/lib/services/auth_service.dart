@@ -1,55 +1,48 @@
-import '../models/user_model.dart';
+import 'package:makankuy/models/user_model.dart';
 
 class AuthService {
-  User? _currentUser;
+  Future<UserModel> login(String email, String password) async {
+    await Future<void>.delayed(const Duration(milliseconds: 400));
 
-  Future<User> login(
-    String email,
-    String password,
-  ) async {
-    await Future<void>.delayed(
-      const Duration(milliseconds: 300),
-    );
+    final lower = email.toLowerCase();
 
-    final role = email.toLowerCase().contains('admin')
-        ? 'restaurant_admin'
-        : 'customer';
+    if (lower.contains('superadmin')) {
+      return UserModel(
+        id: 3,
+        name: 'Administrator',
+        email: email,
+        role: 'administrator',
+      );
+    }
 
-    _currentUser = User(
+    if (lower.contains('admin')) {
+      return UserModel(
+        id: 2,
+        name: 'Admin Restoran',
+        email: email,
+        role: 'admin',
+      );
+    }
+
+    return UserModel(
       id: 1,
-      name: role == 'restaurant_admin'
-          ? 'Admin Restoran'
-          : 'Pelanggan MakanKuy',
+      name: 'Pelanggan MakanKuy',
       email: email,
-      role: role,
+      role: 'customer',
     );
-
-    return _currentUser!;
   }
 
-  Future<User> register(
+  Future<UserModel> register(
     String name,
     String email,
     String password,
-    String role,
   ) async {
-    await Future<void>.delayed(
-      const Duration(milliseconds: 300),
-    );
-
-    _currentUser = User(
+    await Future<void>.delayed(const Duration(milliseconds: 400));
+    return UserModel(
       id: 1,
       name: name,
       email: email,
-      role: role,
+      role: 'customer',
     );
-
-    return _currentUser!;
   }
-
-  Future<void> logout() async {
-    _currentUser = null;
-  }
-
-  User? get currentUser => _currentUser;
 }

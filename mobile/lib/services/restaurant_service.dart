@@ -1,67 +1,52 @@
-import '../models/restaurant_model.dart';
+import 'package:makankuy/models/restaurant_model.dart';
 
 class RestaurantService {
-  Future<List<Restaurant>> getRestaurants({
-    String search = '',
-    String category = '',
-  }) async {
-    await Future<void>.delayed(
-      const Duration(milliseconds: 250),
-    );
+  Future<List<RestaurantModel>> getRestaurants() async {
+    await Future<void>.delayed(const Duration(milliseconds: 350));
 
-    final data = <Restaurant>[
-      const Restaurant(
+    return const [
+      RestaurantModel(
         id: 1,
-        name: 'MakanKuy Resto',
-        imageUrl: '',
-        rating: 4.8,
-        address: 'Ternate, Maluku Utara',
-        openingHours: '10:00 - 22:00',
-        description:
-            'Restoran lokal dengan pilihan makanan yang cocok untuk keluarga dan teman.',
-        category: 'Nusantara',
-        averagePrice: 'Rp25.000 - Rp75.000',
-      ),
-      const Restaurant(
-        id: 2,
-        name: 'Rasa Bahari',
-        imageUrl: '',
-        rating: 4.6,
-        address: 'Ternate, Maluku Utara',
-        openingHours: '09:00 - 21:00',
-        description:
-            'Tempat makan dengan menu olahan laut dan makanan khas daerah.',
+        name: 'Rumah Makan Gohu Ikan Gamalama',
         category: 'Seafood',
-        averagePrice: 'Rp30.000 - Rp90.000',
-      ),
-      const Restaurant(
-        id: 3,
-        name: 'Kedai Rempah',
-        imageUrl: '',
-        rating: 4.5,
-        address: 'Ternate, Maluku Utara',
-        openingHours: '11:00 - 23:00',
+        address: 'Gamalama, Ternate',
         description:
-            'Kedai dengan menu sederhana, harga terjangkau, dan suasana santai.',
+            'Restoran lokal dengan pilihan makanan khas Maluku Utara, suasana nyaman, dan cocok untuk keluarga.',
+        imageUrl:
+            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4',
+        openingHours: '10:00 - 22:00 WIT',
+        rating: 4.9,
+        distance: 1.2,
+        averagePrice: 50000,
+      ),
+      RestaurantModel(
+        id: 2,
+        name: 'Dapur Ikan Fufu Dodoku',
+        category: 'Nusantara',
+        address: 'Ternate Selatan',
+        description:
+            'Pilihan menu lokal dan seafood dengan rasa khas serta harga yang terjangkau.',
+        imageUrl:
+            'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f',
+        openingHours: '09:00 - 21:00 WIT',
+        rating: 4.7,
+        distance: 2.3,
+        averagePrice: 45000,
+      ),
+      RestaurantModel(
+        id: 3,
+        name: 'Kedai Rempah Ternate',
         category: 'Kedai',
-        averagePrice: 'Rp15.000 - Rp50.000',
+        address: 'Ternate Tengah',
+        description:
+            'Kedai santai dengan menu makanan dan minuman untuk berkumpul bersama teman.',
+        imageUrl:
+            'https://images.unsplash.com/photo-1552566626-52f8b828add9',
+        openingHours: '11:00 - 23:00 WIT',
+        rating: 4.6,
+        distance: 3.1,
+        averagePrice: 30000,
       ),
     ];
-
-    final normalizedSearch = search.trim().toLowerCase();
-    return data.where((restaurant) {
-      final matchesSearch = normalizedSearch.isEmpty ||
-          restaurant.name.toLowerCase().contains(
-                normalizedSearch,
-              ) ||
-          restaurant.address.toLowerCase().contains(
-                normalizedSearch,
-              );
-
-      final matchesCategory = category.isEmpty ||
-          restaurant.category == category;
-
-      return matchesSearch && matchesCategory;
-    }).toList();
   }
 }

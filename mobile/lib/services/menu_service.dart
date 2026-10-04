@@ -1,43 +1,44 @@
-import '../models/menu_model.dart';
+import 'package:makankuy/models/menu_model.dart';
 
 class MenuService {
-  Future<List<Menu>> getMenus(int restaurantId) async {
-    await Future<void>.delayed(
-      const Duration(milliseconds: 200),
-    );
+  Future<List<MenuModel>> getMenus(int restaurantId) async {
+    await Future<void>.delayed(const Duration(milliseconds: 250));
 
-    return <Menu>[
-      Menu(
+    return [
+      MenuModel(
         id: 1,
         restaurantId: restaurantId,
-        name: 'Nasi Ayam Rempah',
-        imageUrl: '',
-        price: 25000,
+        name: 'Gohu Ikan Cakalang Segar',
         description:
-            'Nasi dengan ayam dan bumbu rempah khas.',
+            'Gohu ikan dengan bumbu khas, segar, gurih, dan cocok untuk makan bersama.',
+        price: 35000,
         category: 'Makanan',
-        isPopular: true,
+        imageUrl:
+            'https://images.unsplash.com/photo-1547592180-85f173990554',
+        popular: true,
       ),
-      Menu(
+      MenuModel(
         id: 2,
         restaurantId: restaurantId,
-        name: 'Ikan Bakar',
-        imageUrl: '',
-        price: 40000,
+        name: 'Ikan Bakar Rempah',
         description:
-            'Ikan bakar dengan sambal dan pelengkap.',
-        category: 'Makanan',
-        isPopular: true,
+            'Ikan bakar dengan bumbu rempah dan sambal khas daerah.',
+        price: 55000,
+        category: 'Seafood',
+        imageUrl:
+            'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2',
+        popular: true,
       ),
-      Menu(
+      MenuModel(
         id: 3,
         restaurantId: restaurantId,
-        name: 'Es Teh',
-        imageUrl: '',
-        price: 8000,
-        description: 'Teh dingin sebagai minuman pendamping.',
-        category: 'Minuman',
-        isPopular: false,
+        name: 'Nasi Rempah Ayam',
+        description: 'Nasi berbumbu dengan ayam dan sambal pilihan.',
+        price: 30000,
+        category: 'Makanan',
+        imageUrl:
+            'https://images.unsplash.com/photo-1512058564366-18510be2db19',
+        popular: false,
       ),
     ];
   }

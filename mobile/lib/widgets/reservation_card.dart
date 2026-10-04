@@ -1,80 +1,74 @@
 import 'package:flutter/material.dart';
-
-import '../models/reservation_model.dart';
-import '../utils/colors.dart';
+import 'package:makankuy/models/reservation_model.dart';
+import 'package:makankuy/utils/colors.dart';
 
 class ReservationCard extends StatelessWidget {
-  final Reservation reservation;
+  final ReservationModel reservation;
 
   const ReservationCard({
     super.key,
     required this.reservation,
   });
 
-  Color _statusColor() {
-    switch (reservation.status) {
-      case 'Confirmed':
-        return AppColors.success;
-      case 'Cancelled':
-        return AppColors.danger;
-      case 'Completed':
-        return Colors.blue;
-      default:
-        return AppColors.warning;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    reservation.restaurantName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                    ),
+    final statusColor = reservation.status == 'Confirmed'
+        ? AppColors.success
+        : reservation.status == 'Cancelled'
+            ? AppColors.danger
+            : AppColors.primary;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.lightGrey),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  reservation.restaurantName,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor.withOpacity(.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  reservation.status,
+                  style: TextStyle(
+                    color: statusColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _statusColor().withAlpha(25),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    reservation.status,
-                    style: TextStyle(
-                      color: _statusColor(),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              '${reservation.reservationDate.day}/'
-              '${reservation.reservationDate.month}/'
-              '${reservation.reservationDate.year} • '
-              '${reservation.reservationTime}',
-            ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text('${reservation.date} • ${reservation.time}'),
+          const SizedBox(height: 5),
+          Text('${reservation.guests} orang'),
+          if (reservation.note.isNotEmpty) ...[
             const SizedBox(height: 5),
-            Text('${reservation.guestCount} orang'),
+            Text(
+              reservation.note,
+              style: const TextStyle(color: AppColors.grey),
+            ),
           ],
-        ),
+        ],
       ),
     );
   }

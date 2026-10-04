@@ -1,37 +1,36 @@
 import 'package:flutter/foundation.dart';
-
-import '../models/restaurant_model.dart';
-import '../services/restaurant_service.dart';
+import 'package:makankuy/models/restaurant_model.dart';
+import 'package:makankuy/services/restaurant_service.dart';
 
 class RestaurantProvider extends ChangeNotifier {
   final RestaurantService _service = RestaurantService();
 
-  List<Restaurant> _restaurants = [];
-  bool _isLoading = false;
-  String? _error;
+  List<RestaurantModel> restaurants = [];
+  bool loading = false;
 
-  List<Restaurant> get restaurants => _restaurants;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-
-  Future<void> loadRestaurants({
-    String search = '',
-    String category = '',
-  }) async {
-    _isLoading = true;
-    _error = null;
+  Future<void> loadRestaurants() async {
+    loading = true;
     notifyListeners();
 
     try {
-      _restaurants = await _service.getRestaurants(
-        search: search,
-        category: category,
-      );
-    } catch (e) {
-      _error = e.toString();
+      restaurants = await _service.getRestaurants();
     } finally {
-      _isLoading = false;
+      loading = false;
       notifyListeners();
     }
+  }
+
+  List<RestaurantModel> search(String query) {
+    final q = query.trim().toLowerCase();
+
+    if (q.isEmpty) {
+      return restaurants;
+    }
+
+    return restaurants.where((item) {
+      return item.name.toLowerCase().contains(q) ||
+          item.category.toLowerCase().contains(q) ||
+          item.address.toLowerCase().contains(q);
+    }).toList();
   }
 }
