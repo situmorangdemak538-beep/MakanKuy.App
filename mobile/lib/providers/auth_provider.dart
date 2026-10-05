@@ -1,41 +1,47 @@
 import 'package:flutter/foundation.dart';
-import 'package:makankuy/models/user_model.dart';
-import 'package:makankuy/services/auth_service.dart';
+import '../data/models/user_profile.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final AuthService _service = AuthService();
-
-  UserModel? user;
+  UserProfile? user;
   bool loading = false;
 
+  /// DUMMY: nanti diganti POST /api/login (simpan token di local storage)
   Future<bool> login(String email, String password) async {
     loading = true;
     notifyListeners();
-
-    try {
-      user = await _service.login(email, password);
-      return true;
-    } finally {
-      loading = false;
-      notifyListeners();
-    }
+    await Future.delayed(const Duration(milliseconds: 700));
+    final isAdmin = email.trim().toLowerCase().startsWith('admin');
+    user = UserProfile(
+      name: isAdmin ? 'Admin Gamalama' : 'Farhan Abdurrahman',
+      email: email.trim(),
+      phone: '+62 812-4421-9870',
+      role: isAdmin ? AppRole.admin : AppRole.customer,
+    );
+    loading = false;
+    notifyListeners();
+    return true;
   }
 
-  Future<bool> register(
-    String name,
-    String email,
-    String password,
-  ) async {
+  /// DUMMY: nanti diganti POST /api/register
+  Future<bool> register(String name, String phone, String email) async {
     loading = true;
     notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 700));
+    user = UserProfile(
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        role: AppRole.customer);
+    loading = false;
+    notifyListeners();
+    return true;
+  }
 
-    try {
-      user = await _service.register(name, email, password);
-      return true;
-    } finally {
-      loading = false;
-      notifyListeners();
-    }
+  void updateProfile(String name, String phone) {
+    if (user == null) return;
+    user!.name = name;
+    user!.phone = phone;
+    notifyListeners();
   }
 
   void logout() {
