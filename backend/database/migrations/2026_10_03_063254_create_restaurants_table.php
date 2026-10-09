@@ -11,10 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('restaurants', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+    Schema::create('restaurants', function (Blueprint $table) {
+    $table->id();
+    $table->string('nama');
+    $table->string('kategori');
+    $table->string('alamat');
+    $table->decimal('rating', 2, 1)->default(0);
+    $table->string('jam_buka');
+    $table->integer('harga_rata_rata');
+    $table->string('gambar')->nullable();
+    $table->timestamps();
+});
     }
 
     /**
