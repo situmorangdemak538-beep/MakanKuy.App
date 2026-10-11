@@ -3,333 +3,235 @@ import 'package:flutter/material.dart';
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
 
+  static const Color _background = Color(0xFFF8F9FA);
+  static const Color _primary = Colors.deepOrange;
+  static const Color _textPrimary = Color(0xFF212121);
+  static const Color _textSecondary = Color(0xFF757575);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: _background,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: _textPrimary,
+        elevation: 0.5,
+        centerTitle: false,
+        titleSpacing: 16,
+        toolbarHeight: 76,
+        title: Row(
+          children: [
+            // Logo MakanKuy.
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: _primary,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                'MK',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+
+            const SizedBox(width: 10),
+
+            // Informasi restoran.
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 6,
+                    children: [
+                      const Text(
+                        'MakanKuy Partner',
+                        style: TextStyle(
+                          color: _textPrimary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFE8D9),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: const Text(
+                          'UMKM',
+                          style: TextStyle(
+                            color: _primary,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  const Row(
+                    children: [
+                      Icon(Icons.circle, color: Colors.green, size: 8),
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: Text(
+                          'RM Gohu Ikan Gamalama • Buka',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: _textSecondary, fontSize: 11),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- HEADER MERCHANT ---
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            'MakanKuy Partner ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.orange.shade100,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Text(
-                              'UMKM',
-                              style: TextStyle(
-                                color: Colors.orange,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: const [
-                          Icon(Icons.circle, color: Colors.green, size: 8),
-                          SizedBox(width: 4),
-                          Text(
-                            'RM Gohu Ikan Gamalama • Buka',
-                            style: TextStyle(color: Colors.grey, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.notifications_none),
-                        onPressed: () {},
-                      ),
-                      const CircleAvatar(
-                        radius: 18,
-                        backgroundColor: Colors.orange,
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              // --- BUKA OPERASIONAL BANNER ---
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Row(
-                      children: [
-                        Icon(Icons.circle, color: Colors.green, size: 10),
-                        SizedBox(width: 6),
-                        Text(
-                          'BUKA OPERASIONAL',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      '10:00 - 22:00 WIT',
-                      style: TextStyle(fontSize: 11, color: Colors.black54),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // --- RINGKASAN HARI INI ---
               const Text(
                 'Ringkasan Hari Ini',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: _textPrimary,
+                ),
               ),
+
+              const SizedBox(height: 6),
+
               const Text(
-                'Jl. Pahlawan Revolusi, Ternate Tengah • Gamalama',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+                'Pantau aktivitas restoran kamu hari ini.',
+                style: TextStyle(fontSize: 13, color: _textSecondary),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
-              // --- GRID STATISTIK ---
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.3,
-                children: [
-                  // Total Reservasi
-                  _buildStatCard(
-                    icon: Icons.calendar_today_outlined,
-                    iconColor: Colors.orange,
-                    badgeText: '+4',
-                    badgeColor: Colors.green.shade100,
-                    badgeTextColor: Colors.green,
-                    title: 'Total Reservasi',
-                    value: '18 Booking',
-                    subtitle: 'Naik dibanding kemarin',
-                  ),
-                  // Okupansi Meja
-                  _buildStatCard(
-                    icon: Icons.chair_outlined,
-                    iconColor: Colors.orange,
-                    badgeText: '80%',
-                    badgeColor: Colors.orange.shade100,
-                    badgeTextColor: Colors.orange,
-                    title: 'Okupansi Meja',
-                    value: '8 / 10 Meja',
-                    subtitle: '',
-                    showProgressBar: true,
-                  ),
-                  // Estimasi Omzet
-                  _buildStatCard(
-                    icon: Icons.account_balance_wallet_outlined,
-                    iconColor: Colors.teal,
-                    badgeText: 'Pre-order',
-                    badgeColor: Colors.grey.shade200,
-                    badgeTextColor: Colors.black54,
-                    title: 'Estimasi Omzet',
-                    value: 'Rp 1.850.000',
-                    subtitle: '14 reservasi santap',
-                  ),
-                  // Butuh Tindakan
-                  _buildStatCard(
-                    icon: Icons.notifications_active,
-                    iconColor: Colors.white,
-                    iconBgColor: Colors.red,
-                    title: 'Butuh Tindakan',
-                    value: '3 Reservasi',
-                    subtitle: 'Perlu respon segera',
-                    valueColor: Colors.red,
-                    cardBgColor: Colors.red.shade50,
-                  ),
-                ],
-              ),
+              // Grid statistik yang menyesuaikan lebar layar.
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final int columns = constraints.maxWidth >= 600 ? 4 : 2;
 
-              const SizedBox(height: 16),
-
-              // --- TOMBOL AKSI CEPAT ---
-              Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.qr_code_scanner,
-                        color: Colors.white,
+                  return GridView.count(
+                    crossAxisCount: columns,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: columns == 4 ? 1.15 : 1.5,
+                    children: const [
+                      _SummaryCard(
+                        title: 'Reservasi',
+                        value: '12',
+                        subtitle: 'Hari ini',
+                        icon: Icons.phone_android_rounded,
+                        iconColor: Colors.blue,
+                        iconBackground: Color(0xFFE3F2FD),
                       ),
-                      label: const Text(
-                        'Scan Tamu Tiba',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      _SummaryCard(
+                        title: 'Pendapatan',
+                        value: 'Rp 850k',
+                        subtitle: 'Hari ini',
+                        icon: Icons.account_balance_wallet_rounded,
+                        iconColor: Colors.green,
+                        iconBackground: Color(0xFFE8F5E9),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF5722),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                      _SummaryCard(
+                        title: 'Meja Terisi',
+                        value: '4/10',
+                        subtitle: 'Meja digunakan',
+                        icon: Icons.table_restaurant_rounded,
+                        iconColor: Color(0xFFFFA000),
+                        iconBackground: Color(0xFFFFF3E0),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 3,
-                    child: OutlinedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.power_settings_new,
-                        color: Colors.teal,
+                      _SummaryCard(
+                        title: 'Menu Aktif',
+                        value: '24',
+                        subtitle: 'Menu tersedia',
+                        icon: Icons.restaurant_menu_rounded,
+                        iconColor: Colors.purple,
+                        iconBackground: Color(0xFFF3E5F5),
                       ),
-                      label: const Text(
-                        'Reservasi Buka',
-                        style: TextStyle(
-                          color: Colors.teal,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               ),
 
               const SizedBox(height: 24),
 
-              // --- DENAH & STATUS MEJA HEADER ---
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Denah & Status Meja',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Lihat Semua (10)',
-                      style: TextStyle(color: Colors.orange),
-                    ),
-                  ),
-                ],
-              ),
-
-              // Keterangan Status
-              Row(
-                children: [
-                  _buildLegend(Colors.green, 'Tersedia'),
-                  const SizedBox(width: 12),
-                  _buildLegend(Colors.red, 'Terisi'),
-                  const SizedBox(width: 12),
-                  _buildLegend(Colors.orange, 'Booking'),
-                  const Spacer(),
-                  const Text(
-                    'Live Monitor',
-                    style: TextStyle(fontSize: 11, color: Colors.grey),
-                  ),
-                ],
+              // Bagian aktivitas.
+              const Text(
+                'Aktivitas Restoran',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: _textPrimary,
+                ),
               ),
 
               const SizedBox(height: 12),
 
-              // --- GRID MEJA ---
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.4,
-                children: [
-                  _buildTableCard(
-                    name: 'Meja 01',
-                    status: 'Terisi',
-                    statusColor: Colors.orange.shade800,
-                    statusBgColor: Colors.orange.shade100,
-                    accentColor: Colors.orange,
-                    desc: 'Indoor AC • 4 Kursi',
-                    note: 'Makan di tempat',
-                  ),
-                  _buildTableCard(
-                    name: 'Meja 02',
-                    status: 'Kosong',
-                    statusColor: Colors.green,
-                    statusBgColor: Colors.green.shade100,
-                    accentColor: Colors.green,
-                    desc: 'Indoor AC • 4 Kursi',
-                    note: 'Siap ditempati',
-                  ),
-                  _buildTableCard(
-                    name: 'Meja 06',
-                    status: '19:00 WIT',
-                    statusColor: Colors.orange.shade800,
-                    statusBgColor: Colors.orange.shade100,
-                    accentColor: Colors.orange,
-                    desc: 'Lesehan Laut • 6 Kursi',
-                    note: 'Farhan A. (4 Tamu)',
-                  ),
-                  _buildTableCard(
-                    name: 'Gazebo Ke...',
-                    status: 'Kosong',
-                    statusColor: Colors.green,
-                    statusBgColor: Colors.green.shade100,
-                    accentColor: Colors.green,
-                    desc: 'Outdoor Teduh • 4 Kursi',
-                    note: 'Booking 18:30 nanti',
-                  ),
-                ],
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFEEEEEE)),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(
+                      Icons.notifications_active_outlined,
+                      color: _primary,
+                      size: 28,
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Selamat datang di MakanKuy Partner',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: _textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Kelola menu dan pantau reservasi '
+                            'restoran melalui dashboard ini.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: _textSecondary,
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -337,187 +239,90 @@ class AdminDashboardScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  // Helper Widget untuk Card Statistik
-  Widget _buildStatCard({
-    required IconData icon,
-    required Color iconColor,
-    Color? iconBgColor,
-    String? badgeText,
-    Color? badgeColor,
-    Color? badgeTextColor,
-    required String title,
-    required String value,
-    required String subtitle,
-    Color? valueColor,
-    Color? cardBgColor,
-    bool showProgressBar = false,
-  }) {
+class _SummaryCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final String subtitle;
+  final IconData icon;
+  final Color iconColor;
+  final Color iconBackground;
+
+  const _SummaryCard({
+    required this.title,
+    required this.value,
+    required this.subtitle,
+    required this.icon,
+    required this.iconColor,
+    required this.iconBackground,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: cardBgColor ?? Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: iconBgColor ?? iconColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  icon,
-                  color: iconBgColor != null ? Colors.white : iconColor,
-                  size: 20,
-                ),
-              ),
-              if (badgeText != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: badgeColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    badgeText,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: badgeTextColor,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(fontSize: 11, color: Colors.grey),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: valueColor ?? Colors.black87,
-                ),
-              ),
-              if (showProgressBar) ...[
-                const SizedBox(height: 4),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: const LinearProgressIndicator(
-                    value: 0.8,
-                    backgroundColor: Color(0xFFE0E0E0),
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
-                    minHeight: 4,
-                  ),
-                ),
-              ],
-              if (subtitle.isNotEmpty)
-                Text(
-                  subtitle,
-                  style: const TextStyle(fontSize: 9, color: Colors.grey),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Helper Widget Keterangan Warna Status
-  Widget _buildLegend(Color color, String label) {
-    return Row(
-      children: [
-        Icon(Icons.circle, color: color, size: 8),
-        const SizedBox(width: 4),
-        Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
-      ],
-    );
-  }
-
-  // Helper Widget Card Status Meja
-  Widget _buildTableCard({
-    required String name,
-    required String status,
-    required Color statusColor,
-    required Color statusBgColor,
-    required Color accentColor,
-    required String desc,
-    required String note,
-  }) {
-    return Container(
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border(left: BorderSide(color: accentColor, width: 4)),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFEEEEEE)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: 0.025),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(10),
       child: Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: statusBgColor,
-                  borderRadius: BorderRadius.circular(4),
-                ),
+              Expanded(
                 child: Text(
-                  status,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xFF757575),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
+              const SizedBox(width: 4),
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: iconBackground,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: iconColor, size: 19),
+              ),
             ],
           ),
-          Text(desc, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+          const SizedBox(height: 12),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF212121),
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
           Text(
-            note,
-            style: const TextStyle(fontSize: 10, color: Colors.black87),
+            subtitle,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: Color(0xFF9E9E9E), fontSize: 11),
           ),
         ],
       ),

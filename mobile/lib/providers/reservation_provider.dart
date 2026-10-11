@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../data/dummy_data.dart';
 import '../data/models/reservation.dart';
 import '../data/models/restaurant.dart';
@@ -58,8 +59,10 @@ class ReservationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get preorderTotal => preorder.entries
-      .fold(0, (sum, e) => sum + e.value * (preorderUnit[e.key] ?? 0));
+  int get preorderTotal => preorder.entries.fold(
+    0,
+    (sum, e) => sum + e.value * (preorderUnit[e.key] ?? 0),
+  );
 
   String get preorderText =>
       preorder.entries.map((e) => '${e.value}× ${e.key}').join(', ');
@@ -75,8 +78,11 @@ class ReservationProvider extends ChangeNotifier {
   }
 
   /// DUMMY: nanti POST /api/reservations
-  Reservation submit(Restaurant r,
-      {required String name, required String phone}) {
+  Reservation submit(
+    Restaurant r, {
+    required String name,
+    required String phone,
+  }) {
     final res = Reservation(
       code: 'MK-TRN-${8830 + _seq++}',
       restaurantId: r.id,
@@ -112,16 +118,16 @@ class ReservationProvider extends ChangeNotifier {
   }
 
   // ---------- Admin ----------
-  List<Reservation> get pending => incoming
-      .where((r) => r.status == ReservationStatus.pending)
-      .toList();
-  List<Reservation> get approved => incoming
-      .where((r) => r.status == ReservationStatus.confirmed)
-      .toList();
+  List<Reservation> get pending =>
+      incoming.where((r) => r.status == ReservationStatus.pending).toList();
+  List<Reservation> get approved =>
+      incoming.where((r) => r.status == ReservationStatus.confirmed).toList();
   List<Reservation> get finished => incoming
-      .where((r) =>
-          r.status == ReservationStatus.completed ||
-          r.status == ReservationStatus.cancelled)
+      .where(
+        (r) =>
+            r.status == ReservationStatus.completed ||
+            r.status == ReservationStatus.cancelled,
+      )
       .toList();
 
   /// DUMMY: nanti PUT /api/reservations/{id}/status

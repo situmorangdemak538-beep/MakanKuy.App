@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../data/models/user_profile.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -28,10 +29,11 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
     await Future.delayed(const Duration(milliseconds: 700));
     user = UserProfile(
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        role: AppRole.customer);
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      role: AppRole.customer,
+    );
     loading = false;
     notifyListeners();
     return true;
