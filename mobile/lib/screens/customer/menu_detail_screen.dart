@@ -27,18 +27,28 @@ class _Opt {
 
 class _MenuDetailScreenState extends State<MenuDetailScreen> {
   static const _spice = [
-    _Opt('Sedang', 'Rica rawit 3 biji • Pedas ramah', icon: Icons.sentiment_satisfied_alt_rounded),
-    _Opt('Pedas Mantap', 'Rica rawit 7 biji • Racikan autentik Ternate', badge: 'Rekomendasi', icon: Icons.local_fire_department_rounded),
-    _Opt('Super Pedas Khas Gamalama', 'Rica rawit 12 biji • Sangat pedas & membakar', icon: Icons.whatshot_rounded),
+    _Opt('Sedang', 'Rica rawit 3 biji • Pedas ramah',
+        icon: Icons.sentiment_satisfied_alt_rounded),
+    _Opt('Pedas Mantap', 'Rica rawit 7 biji • Racikan autentik Ternate',
+        badge: 'Rekomendasi', icon: Icons.local_fire_department_rounded),
+    _Opt('Super Pedas Khas Gamalama',
+        'Rica rawit 12 biji • Sangat pedas & membakar',
+        icon: Icons.whatshot_rounded),
   ];
   static const _fish = [
     _Opt('Ikan Cakalang Segar', 'Daging padat gurih khas laut Maluku'),
-    _Opt('Ikan Tuna Sirip Kuning (Yellowfin)', 'Sangat lembut, berlemak & manis segar', extra: 5000),
+    _Opt('Ikan Tuna Sirip Kuning (Yellowfin)',
+        'Sangat lembut, berlemak & manis segar',
+        extra: 5000),
   ];
   static const _addons = [
-    _Opt('Ekstra Kacang Kenari Panggang', 'Lebih gurih, renyah melimpah', extra: 5000),
-    _Opt('Pisang Goreng Mulut Bebek', 'Teman makan gohu paling nikmat', extra: 10000),
-    _Opt('Singkong / Kasbi Rebus Hangat', 'Empuk pulen pelengkap sarapan pantai', extra: 8000),
+    _Opt('Ekstra Kacang Kenari Panggang', 'Lebih gurih, renyah melimpah',
+        extra: 5000),
+    _Opt('Pisang Goreng Mulut Bebek', 'Teman makan gohu paling nikmat',
+        extra: 10000),
+    _Opt(
+        'Singkong / Kasbi Rebus Hangat', 'Empuk pulen pelengkap sarapan pantai',
+        extra: 8000),
   ];
 
   int _s = 1;
@@ -73,8 +83,12 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
   Widget _tile(_Opt o, bool selected, VoidCallback onTap,
       {bool check = false, bool showExtra = true}) {
     final icon = check
-        ? (selected ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded)
-        : (selected ? Icons.radio_button_checked : Icons.radio_button_unchecked);
+        ? (selected
+            ? Icons.check_box_rounded
+            : Icons.check_box_outline_blank_rounded)
+        : (selected
+            ? Icons.radio_button_checked
+            : Icons.radio_button_unchecked);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -91,12 +105,18 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
           Icon(icon, color: selected ? AppColors.primaryDark : AppColors.muted),
           gapW(10),
           Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                Flexible(child: Text(o.title, style: ts(14, w: FontWeight.w800))),
+                Flexible(
+                    child: Text(o.title, style: ts(14, w: FontWeight.w800))),
                 if (o.badge != null) ...[
                   gapW(6),
-                  Pill(text: o.badge!, bg: AppColors.amberSoft, fg: const Color(0xFF6B4400), fontSize: 9),
+                  Pill(
+                      text: o.badge!,
+                      bg: AppColors.amberSoft,
+                      fg: const Color(0xFF6B4400),
+                      fontSize: 9),
                 ],
               ]),
               Text(o.sub, style: ts(11, c: AppColors.muted)),
@@ -120,7 +140,8 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
       body: Column(children: [
         DetailTopBar(
             title: 'Detail Restoran',
-            onShare: () => Share.share('${m.name} di ${widget.restaurant.name} - MakanKuy')),
+            onShare: () => Share.share(
+                '${m.name} di ${widget.restaurant.name} - MakanKuy')),
         Expanded(
           child: ListView(padding: EdgeInsets.zero, children: [
             SizedBox(
@@ -173,96 +194,140 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Expanded(
-                      child: Text(m.name,
-                          style: ts(24, w: FontWeight.w800, h: 1.2))),
-                  gapW(8),
-                  Text(rupiah(m.price),
-                      style: ts(20, w: FontWeight.w800, c: AppColors.primaryDark)),
-                ]),
-                gap(4),
-                Text('Sashimi Tradisional Khas Maluku Utara',
-                    style: ts(13, w: FontWeight.w600, c: AppColors.muted)),
-                gap(14),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: box(color: AppColors.surface, r: 18),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      const Icon(Icons.menu_book_rounded, size: 18, color: AppColors.primaryDark),
-                      gapW(6),
-                      Text('Cerita & Tradisi Kuliner',
-                          style: ts(13, w: FontWeight.w800, c: AppColors.primaryDark)),
-                    ]),
-                    gap(8),
-                    Text(
-                        'Gohu Ikan tersohor sebagai mahakarya kuliner Ternate yang dijuluki "Sashimi Moluccas". Dibuat langsung dari potongan cakalang segar yang baru diturunkan dari perahu nelayan, dimatangkan alami menggunakan asam segar perasan jeruk kasturi tanpa proses pemasangan api. Taburan kacang kenari panggang khas Pulau Ternate dan aroma daun kemangi memberikan keseimbangan gurih, renyah, dan pedas yang meledak di lidah.',
-                        style: ts(12, c: AppColors.muted, h: 1.65)),
-                  ]),
-                ),
-                _head(Icons.local_fire_department_outlined, 'Tingkat Kepedasan (Rica)', 'Wajib Pilih', AppColors.peach, AppColors.primaryDark),
-                for (var i = 0; i < _spice.length; i++)
-                  _tile(_spice[i], _s == i, () => setState(() => _s = i)),
-                _head(Icons.set_meal_outlined, 'Pilihan Ikan Segar', 'Wajib Pilih', AppColors.peach, AppColors.primaryDark),
-                for (var i = 0; i < _fish.length; i++)
-                  _tile(_fish[i], _f == i, () => setState(() => _f = i)),
-                _head(Icons.add_circle_outline_rounded, 'Tambahan Pelengkap', 'Opsional', AppColors.surface, AppColors.muted),
-                for (var i = 0; i < _addons.length; i++)
-                  _tile(_addons[i], _a.contains(i),
-                      () => setState(() => _a.contains(i) ? _a.remove(i) : _a.add(i)),
-                      check: true),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 10),
-                  child: Row(children: [
-                    const Icon(Icons.edit_note_rounded, size: 22, color: AppColors.primaryDark),
-                    gapW(8),
-                    Expanded(child: Text('Catatan Khusus Meja', style: ts(15, w: FontWeight.w800))),
-                    Text('${_note.text.length}/150', style: ts(11, c: AppColors.muted)),
-                  ]),
-                ),
-                TextField(
-                  controller: _note,
-                  maxLines: 3,
-                  maxLength: 150,
-                  onChanged: (_) => setState(() {}),
-                  buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,
-                  decoration: const InputDecoration(
-                      hintText: 'Contoh: Daun kemangi dibanyakin, jeruk kasturi dipisah...'),
-                ),
-                gap(16),
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: box(color: AppColors.surface, r: 20),
-                  child: Row(children: [
-                    Expanded(
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('TOTAL PESANAN', style: ts(10, w: FontWeight.w700, c: AppColors.muted)),
-                        Text(rupiah(_total),
-                            style: ts(20, w: FontWeight.w800, c: AppColors.primaryDark)),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              child: Text(m.name,
+                                  style: ts(24, w: FontWeight.w800, h: 1.2))),
+                          gapW(8),
+                          Text(rupiah(m.price),
+                              style: ts(20,
+                                  w: FontWeight.w800,
+                                  c: AppColors.primaryDark)),
+                        ]),
+                    gap(4),
+                    Text('Sashimi Tradisional Khas Maluku Utara',
+                        style: ts(13, w: FontWeight.w600, c: AppColors.muted)),
+                    gap(14),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: box(color: AppColors.surface, r: 18),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              const Icon(Icons.menu_book_rounded,
+                                  size: 18, color: AppColors.primaryDark),
+                              gapW(6),
+                              Text('Cerita & Tradisi Kuliner',
+                                  style: ts(13,
+                                      w: FontWeight.w800,
+                                      c: AppColors.primaryDark)),
+                            ]),
+                            gap(8),
+                            Text(
+                                'Gohu Ikan tersohor sebagai mahakarya kuliner Ternate yang dijuluki "Sashimi Moluccas". Dibuat langsung dari potongan cakalang segar yang baru diturunkan dari perahu nelayan, dimatangkan alami menggunakan asam segar perasan jeruk kasturi tanpa proses pemasangan api. Taburan kacang kenari panggang khas Pulau Ternate dan aroma daun kemangi memberikan keseimbangan gurih, renyah, dan pedas yang meledak di lidah.',
+                                style: ts(12, c: AppColors.muted, h: 1.65)),
+                          ]),
+                    ),
+                    _head(
+                        Icons.local_fire_department_outlined,
+                        'Tingkat Kepedasan (Rica)',
+                        'Wajib Pilih',
+                        AppColors.peach,
+                        AppColors.primaryDark),
+                    for (var i = 0; i < _spice.length; i++)
+                      _tile(_spice[i], _s == i, () => setState(() => _s = i)),
+                    _head(Icons.set_meal_outlined, 'Pilihan Ikan Segar',
+                        'Wajib Pilih', AppColors.peach, AppColors.primaryDark),
+                    for (var i = 0; i < _fish.length; i++)
+                      _tile(_fish[i], _f == i, () => setState(() => _f = i)),
+                    _head(
+                        Icons.add_circle_outline_rounded,
+                        'Tambahan Pelengkap',
+                        'Opsional',
+                        AppColors.surface,
+                        AppColors.muted),
+                    for (var i = 0; i < _addons.length; i++)
+                      _tile(
+                          _addons[i],
+                          _a.contains(i),
+                          () => setState(
+                              () => _a.contains(i) ? _a.remove(i) : _a.add(i)),
+                          check: true),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 10),
+                      child: Row(children: [
+                        const Icon(Icons.edit_note_rounded,
+                            size: 22, color: AppColors.primaryDark),
+                        gapW(8),
+                        Expanded(
+                            child: Text('Catatan Khusus Meja',
+                                style: ts(15, w: FontWeight.w800))),
+                        Text('${_note.text.length}/150',
+                            style: ts(11, c: AppColors.muted)),
                       ]),
                     ),
+                    TextField(
+                      controller: _note,
+                      maxLines: 3,
+                      maxLength: 150,
+                      onChanged: (_) => setState(() {}),
+                      buildCounter: (_,
+                              {required currentLength,
+                              required isFocused,
+                              maxLength}) =>
+                          null,
+                      decoration: const InputDecoration(
+                          hintText:
+                              'Contoh: Daun kemangi dibanyakin, jeruk kasturi dipisah...'),
+                    ),
+                    gap(16),
                     Container(
-                      decoration: box(color: Colors.white, r: 30),
+                      padding: const EdgeInsets.all(14),
+                      decoration: box(color: AppColors.surface, r: 20),
                       child: Row(children: [
-                        IconButton(
-                            onPressed: () => setState(() => _qty = _qty > 1 ? _qty - 1 : 1),
-                            icon: const Icon(Icons.remove_rounded)),
-                        Text('$_qty', style: ts(16, w: FontWeight.w800)),
+                        Expanded(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('TOTAL PESANAN',
+                                    style: ts(10,
+                                        w: FontWeight.w700,
+                                        c: AppColors.muted)),
+                                Text(rupiah(_total),
+                                    style: ts(20,
+                                        w: FontWeight.w800,
+                                        c: AppColors.primaryDark)),
+                              ]),
+                        ),
                         Container(
-                          decoration: const BoxDecoration(
-                              color: AppColors.primary, shape: BoxShape.circle),
-                          child: IconButton(
-                              onPressed: () => setState(() => _qty++),
-                              icon: const Icon(Icons.add_rounded, color: Colors.white)),
+                          decoration: box(color: Colors.white, r: 30),
+                          child: Row(children: [
+                            IconButton(
+                                onPressed: () => setState(
+                                    () => _qty = _qty > 1 ? _qty - 1 : 1),
+                                icon: const Icon(Icons.remove_rounded)),
+                            Text('$_qty', style: ts(16, w: FontWeight.w800)),
+                            Container(
+                              decoration: const BoxDecoration(
+                                  color: AppColors.primary,
+                                  shape: BoxShape.circle),
+                              child: IconButton(
+                                  onPressed: () => setState(() => _qty++),
+                                  icon: const Icon(Icons.add_rounded,
+                                      color: Colors.white)),
+                            ),
+                          ]),
                         ),
                       ]),
                     ),
+                    gap(10),
                   ]),
-                ),
-                gap(10),
-              ]),
             ),
           ]),
         ),
@@ -276,7 +341,9 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  context.read<ReservationProvider>().addPreorder(m.name, _unit, _qty);
+                  context
+                      .read<ReservationProvider>()
+                      .addPreorder(m.name, _unit, _qty);
                   toast(context, '$_qty× ${m.name} ditambahkan ke reservasi');
                   Navigator.pop(context);
                 },

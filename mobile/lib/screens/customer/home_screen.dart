@@ -39,7 +39,8 @@ class HomeScreen extends StatelessWidget {
           Text('Diskon Meja 25% Hari Ini!',
               style: ts(21, w: FontWeight.w800, c: Colors.white)),
           gap(6),
-          Text('Nikmati kuliner legendaris pesisir Ternate bersama kerabat & keluarga tercinta.',
+          Text(
+              'Nikmati kuliner legendaris pesisir Ternate bersama kerabat & keluarga tercinta.',
               style: ts(13, c: Colors.white, h: 1.4)),
           gap(14),
           Row(children: [
@@ -72,10 +73,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Stack(children: [
             FoodImage(
-                path: r.image,
-                height: 150,
-                width: double.infinity,
-                radius: 18),
+                path: r.image, height: 150, width: double.infinity, radius: 18),
             Positioned(
                 left: 8,
                 top: 8,
@@ -99,7 +97,8 @@ class HomeScreen extends StatelessWidget {
               style: ts(15, w: FontWeight.w800)),
           gap(2),
           Row(children: [
-            const Icon(Icons.navigation_outlined, size: 14, color: AppColors.muted),
+            const Icon(Icons.navigation_outlined,
+                size: 14, color: AppColors.muted),
             gapW(4),
             Expanded(
                 child: Text('${r.distanceKm} km • ${r.address}',
@@ -110,8 +109,10 @@ class HomeScreen extends StatelessWidget {
           const Spacer(),
           Row(children: [
             Expanded(
-                child: Text('${rk(r.priceFrom)} - ${rk(r.priceTo).substring(3)}',
-                    style: ts(13, w: FontWeight.w800, c: AppColors.primaryDark))),
+                child: Text(
+                    '${rk(r.priceFrom)} - ${rk(r.priceTo).substring(3)}',
+                    style:
+                        ts(13, w: FontWeight.w800, c: AppColors.primaryDark))),
             SizedBox(
               height: 32,
               child: ElevatedButton(
@@ -152,14 +153,17 @@ class HomeScreen extends StatelessWidget {
           ]),
           gapW(12),
           Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
                 Expanded(
                     child: Text(r.category,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: ts(11, w: FontWeight.w800, c: AppColors.primaryDark))),
-                const Icon(Icons.star_rounded, size: 15, color: AppColors.amber),
+                        style: ts(11,
+                            w: FontWeight.w800, c: AppColors.primaryDark))),
+                const Icon(Icons.star_rounded,
+                    size: 15, color: AppColors.amber),
                 Text('${r.rating}', style: ts(12, w: FontWeight.w800)),
               ]),
               gap(2),
@@ -176,7 +180,8 @@ class HomeScreen extends StatelessWidget {
               Row(children: [
                 Flexible(
                     child: Pill(
-                        text: r.tags.isNotEmpty && r.tags.first.contains('Lesehan')
+                        text: r.tags.isNotEmpty &&
+                                r.tags.first.contains('Lesehan')
                             ? r.tags.first
                             : 'Sedia ${r.tablesFree} Meja',
                         bg: AppColors.greenSoft,
@@ -185,10 +190,12 @@ class HomeScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () => openReservation(context, r),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: box(color: AppColors.peach, r: 20),
                     child: Text('Reservasi',
-                        style: ts(12, w: FontWeight.w800, c: AppColors.primaryDark)),
+                        style: ts(12,
+                            w: FontWeight.w800, c: AppColors.primaryDark)),
                   ),
                 ),
               ]),
@@ -229,18 +236,22 @@ class HomeScreen extends StatelessWidget {
                 ),
                 gapW(10),
                 Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      Text('Ternate, Maluku Utara',
-                          style: ts(14, w: FontWeight.w800)),
-                      const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
-                    ]),
-                    Text('Area Gamalama & Sekitarnya',
-                        style: ts(11, c: AppColors.muted)),
-                  ]),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          Text('Ternate, Maluku Utara',
+                              style: ts(14, w: FontWeight.w800)),
+                          const Icon(Icons.keyboard_arrow_down_rounded,
+                              size: 18),
+                        ]),
+                        Text('Area Gamalama & Sekitarnya',
+                            style: ts(11, c: AppColors.muted)),
+                      ]),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: box(color: AppColors.surface, r: 20),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     const Icon(Icons.circle, size: 8, color: AppColors.green),
@@ -269,7 +280,8 @@ class HomeScreen extends StatelessWidget {
                       height: 42,
                       decoration: const BoxDecoration(
                           color: AppColors.primaryDark, shape: BoxShape.circle),
-                      child: const Icon(Icons.tune_rounded, color: Colors.white),
+                      child:
+                          const Icon(Icons.tune_rounded, color: Colors.white),
                     ),
                   ]),
                 ),
@@ -336,15 +348,18 @@ class HomeScreen extends StatelessWidget {
                   ),
                   gapW(12),
                   Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Punya Warung Makan di Ternate?',
-                          style: ts(14, w: FontWeight.w800)),
-                      Text('Daftarkan mejamu di MakanKuy gratis',
-                          style: ts(12, c: AppColors.muted)),
-                    ]),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Punya Warung Makan di Ternate?',
+                              style: ts(14, w: FontWeight.w800)),
+                          Text('Daftarkan mejamu di MakanKuy gratis',
+                              style: ts(12, c: AppColors.muted)),
+                        ]),
                   ),
                   ElevatedButton(
-                    onPressed: () => toast(context, 'Pendaftaran mitra segera hadir'),
+                    onPressed: () =>
+                        toast(context, 'Pendaftaran mitra segera hadir'),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.ink,
