@@ -42,7 +42,6 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Periksa email dan password
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'message' => 'Email atau password salah',
@@ -51,16 +50,6 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        // Periksa apakah akun diblokir
-        if ($user->blocked) {
-            Auth::logout();
-
-            return response()->json([
-                'message' => 'Akun kamu diblokir dan tidak dapat login',
-            ], 403);
-        }
-
-        // Buat token jika akun tidak diblokir
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
