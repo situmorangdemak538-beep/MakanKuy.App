@@ -77,12 +77,45 @@ class ReservationProvider extends ChangeNotifier {
     preorderUnit.clear();
   }
 
+  /// Slot dianggap terpakai jika reservasi masih menunggu atau sudah dikonfirmasi.
+  /// Reservasi yang dibatalkan/ditolak tidak lagi mengunci slot.
+  bool isSlotUnavailable({
+    required String restaurantId,
+    required DateTime date,
+    required String time,
+    Reservation? excludeReservation,
+  }) {
+    return incoming.any((reservation) {
+      if (excludeReservation != null &&
+          identical(reservation, excludeReservation)) {
+        return false;
+      }
+
+      final sameRestaurant = reservation.restaurantId == restaurantId;
+      final sameDate =
+          reservation.date.year == date.year &&
+          reservation.date.month == date.month &&
+          reservation.date.day == date.day;
+      final sameTime = reservation.time == time;
+      final occupiesSlot =
+          reservation.status == ReservationStatus.pending ||
+          reservation.status == ReservationStatus.confirmed;
+
+      return sameRestaurant && sameDate && sameTime && occupiesSlot;
+    });
+  }
+
   /// DUMMY: nanti POST /api/reservations
   Reservation submit(
     Restaurant r, {
     required String name,
     required String phone,
   }) {
+    final selectedTime = time ?? '19:00';
+
+    if (isSlotUnavailable(restaurantId: r.id, date: date, time: selectedTime)) {
+      throw StateError('Jadwal ini sudah dipesan. Silakan pilih jam lain.');
+    }
     final res = Reservation(
       code: 'MK-TRN-${8830 + _seq++}',
       restaurantId: r.id,
@@ -90,7 +123,7 @@ class ReservationProvider extends ChangeNotifier {
       restaurantAddress: r.address,
       restaurantImage: r.image,
       date: date,
-      time: time ?? '19:00',
+      time: selectedTime,
       tableLabel: seat,
       guests: guests,
       status: ReservationStatus.pending,
