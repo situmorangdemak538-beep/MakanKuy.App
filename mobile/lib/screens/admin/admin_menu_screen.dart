@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format.dart';
-import '../../core/widgets/common.dart';
+import '../../core/widgets/common.dart'
 import '../../data/models/menu_item.dart';
 import '../../providers/menu_provider.dart';
 import 'admin_shell.dart';

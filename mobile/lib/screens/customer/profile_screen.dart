@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+fitur/tegar
 import 'package:provider/provider.dart';
 import '../../core/session.dart';
 import '../../core/theme/app_colors.dart';
@@ -10,13 +11,18 @@ import '../../providers/restaurant_provider.dart';
 import '../partner/register_restaurant_screen.dart';
 import 'restaurant_detail_screen.dart';
  
+
+
+main
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
  
 class _ProfileScreenState extends State<ProfileScreen> {
+fitur/tegar
   bool _reminder = true;
  
   Widget _stat(IconData i, Color bg, String v, String l) => Expanded(
@@ -24,17 +30,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: box(color: AppColors.surface, r: 20),
           child: Column(children: [
+
+  // Status pengingat WhatsApp.
+  bool _whatsappNotification = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
+
+      // Header halaman profil pengguna.
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF7F2F0),
+        elevation: 0.5,
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            main
             Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
-              child: Icon(i, size: 20, color: AppColors.primaryDark),
+              width: 30,
+              height: 30,
+              decoration: const BoxDecoration(
+                color: Colors.deepOrange,
+                shape: BoxShape.circle,
+              ),
+              child: const Center(
+                child: Text(
+                  'MK',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
-            gap(6),
-            Text(v, style: ts(22, w: FontWeight.w800)),
-            Text(l, textAlign: TextAlign.center, style: ts(10, w: FontWeight.w700, c: AppColors.muted)),
-          ]),
+            const SizedBox(width: 8),
+            const Text(
+              'Profil Pengguna',
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
+fitur/tegar
       );
  
   Widget _menuRow(IconData i, String t, String sub, VoidCallback onTap,
@@ -52,23 +94,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
             decoration: BoxDecoration(
                 color: highlight ? AppColors.peach : AppColors.surface, shape: BoxShape.circle),
             child: Icon(i, size: 20, color: highlight ? AppColors.primaryDark : AppColors.muted),
+
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_none,
+              color: Colors.black87,
+              size: 22,
+            ),
+            onPressed: () {
+              _showMessage('Fitur notifikasi');
+            },
+main
           ),
-          gapW(12),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Flexible(child: Text(t, style: ts(14, w: FontWeight.w800))),
-                if (tag != null) ...[
-                  gapW(6),
-                  Pill(text: tag, bg: AppColors.green, fg: Colors.white, fontSize: 9),
-                ],
-              ]),
-              Text(sub, style: ts(11, c: AppColors.muted)),
-            ]),
+          IconButton(
+            icon: const Icon(
+              Icons.person_outline,
+              color: Colors.black87,
+              size: 22,
+            ),
+            onPressed: () {
+              _showMessage('Kamu sedang berada di halaman profil');
+            },
           ),
-          const Icon(Icons.chevron_right_rounded, color: AppColors.muted),
-        ]),
+        ],
       ),
+fitur/tegar
     );
   }
  
@@ -123,154 +174,432 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.all(3),
                     decoration: const BoxDecoration(color: AppColors.green, shape: BoxShape.circle),
                     child: const Avatar(size: 92),
+
+      // Isi profil pengguna.
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // 1. INFORMASI PROFIL PENGGUNA
+          Center(
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 36,
+                      backgroundColor: Colors.orange.shade100,
+                      child: const Icon(
+                        Icons.person,
+                        size: 48,
+                        color: Colors.deepOrange,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.deepOrange,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          size: 12,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Farhan Abdurrahman',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: const BoxDecoration(color: AppColors.primaryDark, shape: BoxShape.circle),
-                      child: const Icon(Icons.verified_rounded, size: 16, color: Colors.white),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.location_on, size: 13, color: Colors.grey),
+                    SizedBox(width: 2),
+                    Text(
+                      'Gamalama, Ternate Tengah',
+                      style: TextStyle(color: Colors.grey, fontSize: 11),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.amber.shade200),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.stars_rounded,
+                        size: 12,
+                        color: Colors.amber.shade800,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Penjelajah Kuliner Ternate • Level 3',
+                        style: TextStyle(
+                          color: Colors.amber.shade900,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  '+62 812-4421-9870 • salwa@gmail.com',
+                  style: TextStyle(color: Colors.grey, fontSize: 11),
+                ),
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: () {
+                    _showMessage('Fitur edit profil belum diaktifkan');
+                  },
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    size: 14,
+                    color: Colors.black87,
+                  ),
+                  label: const Text(
+                    'Edit Profil',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ]),
-                gap(10),
-                Text(user?.name ?? 'Pengguna', style: ts(22, w: FontWeight.w800)),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Icon(Icons.location_on_outlined, size: 14, color: AppColors.primaryDark),
-                  Text(user?.area ?? '', style: ts(12, c: AppColors.muted)),
-                ]),
-                gap(8),
-                Pill(text: user?.level ?? '', bg: AppColors.amberSoft, fg: AppColors.primaryDark, icon: Icons.workspace_premium_outlined, fontSize: 10),
-                gap(8),
-                Text('${user?.phone ?? ''} • ${user?.email ?? ''}', style: ts(12, c: AppColors.muted)),
-                gap(10),
-                ElevatedButton.icon(
-                  onPressed: () => _edit(context),
-                  icon: const Icon(Icons.edit_outlined, size: 16),
-                  label: Text('Edit Profil', style: ts(13, w: FontWeight.w800)),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.ink,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-                      shape: const StadiumBorder()),
                 ),
-              ]),
+              ],
             ),
-            gap(12),
-            Row(children: [
-              _stat(Icons.calendar_month_outlined, AppColors.peach, '$doneCount', 'Reservasi\nSukses'),
-              gapW(10),
-              _stat(Icons.bookmark_border_rounded, AppColors.amberSoft, '${rp.saved.length}', 'Resto Disimpan'),
-              gapW(10),
-              _stat(Icons.rate_review_outlined, AppColors.greenSoft, '15', 'Ulasan Kuliner'),
-            ]),
-            gap(20),
-            SectionTitle(title: '♡ Restoran Ternate Favorit', action: 'Lihat Semua (${favs.length})'),
-            gap(10),
-            SizedBox(
-              height: 190,
-              child: favs.isEmpty
-                  ? Center(child: Text('Belum ada restoran favorit', style: ts(13, c: AppColors.muted)))
-                  : ListView(scrollDirection: Axis.horizontal, children: [
-                      for (final r in favs)
-                        GestureDetector(
-                          onTap: () => openRestaurant(context, r),
-                          child: Container(
-                            width: 230,
-                            margin: const EdgeInsets.only(right: 12),
-                            padding: const EdgeInsets.all(8),
-                            decoration: box(color: AppColors.surface, r: 20),
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Stack(children: [
-                                FoodImage(path: r.image, height: 100, width: double.infinity, radius: 14),
-                                Positioned(
-                                    left: 8,
-                                    top: 8,
-                                    child: Pill(text: '${r.rating}', bg: Colors.black.withAlpha(130), fg: Colors.white, icon: Icons.star_rounded)),
-                                Positioned(
-                                    right: 8,
-                                    top: 8,
-                                    child: Pill(text: r.tablesFree > 0 ? 'Buka' : 'Tutup', bg: AppColors.green, fg: Colors.white)),
-                              ]),
-                              gap(6),
-                              Text(r.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: ts(13, w: FontWeight.w800)),
-                              Text('${r.area} • ${r.category}', maxLines: 1, overflow: TextOverflow.ellipsis, style: ts(11, c: AppColors.muted)),
-                              const Spacer(),
-                              Row(children: [
-                                Expanded(child: Text('${r.tablesFree} Meja Siap', style: ts(11, w: FontWeight.w800, c: AppColors.primaryDark))),
-                                GestureDetector(
-                                    onTap: () => rp.toggleSaved(r.id),
-                                    child: const Icon(Icons.bookmark_rounded, color: AppColors.primaryDark)),
-                              ]),
-                            ]),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 2. STATISTIK PENGGUNA
+          Row(
+            children: [
+              _buildStatBox(
+                '14',
+                'Reservasi\nSukses',
+                Icons.calendar_today_outlined,
+              ),
+              const SizedBox(width: 10),
+              _buildStatBox(
+                '2',
+                'Resto\nDisimpan',
+                Icons.bookmark_border_rounded,
+              ),
+              const SizedBox(width: 10),
+              _buildStatBox(
+                '15',
+                'Ulasan\nKuliner',
+                Icons.rate_review_outlined,
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // 3. RESTORAN FAVORIT
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: const [
+                  Icon(
+                    Icons.favorite_border_rounded,
+                    size: 16,
+                    color: Colors.deepOrange,
+main
+                  ),
+                  SizedBox(width: 6),
+                  Text(
+                    'Restoran Ternate Favorit',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+              TextButton(
+                onPressed: () {
+                  _showMessage('Daftar restoran favorit');
+                },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  visualDensity: VisualDensity.compact,
+                ),
+                child: const Text(
+                  'Lihat Semua (2)',
+                  style: TextStyle(fontSize: 11, color: Colors.deepOrange),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildFavCard(
+                  'Rumah Makan Gohu Ikan Gamalama',
+                  'Ternate Tengah • Kuliner Khas Gamalama',
+                  '4.9',
+                  '4 Meja Siap',
+                ),
+                const SizedBox(width: 10),
+                _buildFavCard(
+                  'Dapur Ikan Fufu Dodoku Ali',
+                  'Ternate Selatan • Seafood Bakar',
+                  '4.8',
+                  '5 Meja Siap',
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // 4. PREFERENSI KULINER DAN RESERVASI
+          Row(
+            children: const [
+              Icon(Icons.tune_rounded, size: 16, color: Colors.deepOrange),
+              SizedBox(width: 6),
+              Text(
+                'Preferensi Kuliner & Reservasi',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 2),
+
+          const Text(
+            'Suasana & Menu Favorit',
+            style: TextStyle(fontSize: 10, color: Colors.grey),
+          ),
+
+          const SizedBox(height: 8),
+
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              _buildTag('Gohu Ikan'),
+              _buildTag('Ikan Fufu'),
+              _buildTag('Seafood Bakar'),
+              _buildTag('Kopi Guraka'),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          // Kartu pengaturan preferensi pengguna.
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Column(
+              children: [
+                // Pengingat WhatsApp.
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.chat_outlined,
+                      size: 18,
+                      color: Colors.green,
+                    ),
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Pengingat WhatsApp',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
+                          Text(
+                            'Kirim konfirmasi H-1 jam reservasi via WA',
+                            style: TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Switch(
+                      value: _whatsappNotification,
+                      activeColor: Colors.green,
+                      onChanged: (value) {
+                        setState(() {
+                          _whatsappNotification = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+
+                const Divider(height: 16),
+
+                // Wilayah prioritas pengguna.
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on_outlined,
+                      size: 18,
+                      color: Colors.deepOrange,
+                    ),
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Wilayah Prioritas',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            'Ternate Tengah & Ternate Selatan',
+                            style: TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        _showMessage('Fitur ubah wilayah belum diaktifkan');
+                      },
+                      child: const Text(
+                        'Ubah',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.deepOrange,
                         ),
-                    ]),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            gap(16),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: box(color: AppColors.surface, r: 24),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
-                  const Icon(Icons.tune_rounded, color: AppColors.primaryDark),
-                  gapW(8),
-                  Text('Preferensi Kuliner & Reservasi', style: ts(15, w: FontWeight.w800)),
-                ]),
-                gap(10),
-                Text('Cuisine & Menu Favorit', style: ts(12, c: AppColors.muted)),
-                gap(8),
-                const Wrap(spacing: 8, runSpacing: 8, children: [
-                  Pill(text: 'Gohu Ikan', bg: AppColors.peach, fg: AppColors.primaryDark, icon: Icons.restaurant, fontSize: 12),
-                  Pill(text: 'Ikan Fufu', bg: AppColors.peach, fg: AppColors.primaryDark, icon: Icons.set_meal_rounded, fontSize: 12),
-                  Pill(text: 'Seafood Bakar', bg: AppColors.peach, fg: AppColors.primaryDark, icon: Icons.outdoor_grill_rounded, fontSize: 12),
-                  Pill(text: 'Kopi Guraka', bg: AppColors.amberSoft, fg: AppColors.primaryDark, icon: Icons.local_cafe_rounded, fontSize: 12),
-                ]),
-                gap(12),
-                Row(children: [
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: const BoxDecoration(color: AppColors.greenSoft, shape: BoxShape.circle),
-                    child: const Icon(Icons.chat_rounded, color: AppColors.green, size: 20),
-                  ),
-                  gapW(12),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Pengingat WhatsApp', style: ts(14, w: FontWeight.w800)),
-                      Text('Kirim konfirmasi H-1 jam ke nomor WA', style: ts(11, c: AppColors.muted)),
-                    ]),
-                  ),
-                  Switch(
-                      value: _reminder,
-                      activeColor: Colors.white,
-                      activeTrackColor: AppColors.green,
-                      onChanged: (v) => setState(() => _reminder = v)),
-                ]),
-                gap(8),
-                Row(children: [
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                    child: const Icon(Icons.explore_outlined, color: AppColors.muted, size: 20),
-                  ),
-                  gapW(12),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Wilayah Prioritas', style: ts(14, w: FontWeight.w800)),
-                      Text('Ternate Tengah & Ternate Selatan', style: ts(11, c: AppColors.muted)),
-                    ]),
-                  ),
-                  Text('Ubah', style: ts(12, w: FontWeight.w800, c: AppColors.primaryDark)),
-                ]),
-              ]),
+          ),
+
+          const SizedBox(height: 20),
+
+          // 5. PENGATURAN DAN BANTUAN
+          const Text(
+            'Pengaturan & Bantuan',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
             ),
-            gap(14),
+          ),
+
+          const SizedBox(height: 8),
+
+          // Hanya pengaturan milik pengguna.
+          // Menu Admin Restoran tidak ditempatkan di sini.
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Column(
+              children: [
+                ListTile(
+                  dense: true,
+                  leading: const Icon(
+                    Icons.notifications_none,
+                    size: 20,
+                    color: Colors.grey,
+                  ),
+                  title: const Text(
+                    'Metode Notifikasi',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+                  subtitle: const Text(
+                    'WhatsApp & Push App',
+                    style: TextStyle(fontSize: 10, color: Colors.grey),
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    size: 18,
+                    color: Colors.grey,
+                  ),
+                  onTap: () {
+                    _showMessage('Pengaturan metode notifikasi');
+                  },
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  // Menampilkan pesan sederhana.
+  void _showMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
+      );
+  }
+
+  // Widget statistik pengguna.
+  Widget _buildStatBox(String count, String label, IconData icon) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          children: [
             Container(
+fitur/tegar
               padding: const EdgeInsets.all(12),
               decoration: box(color: AppColors.surface, r: 24),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -283,31 +612,191 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _menuRow(Icons.support_agent_rounded, 'Pusat Bantuan & Komunitas', 'Bantuan pesan meja & tanya foodie Ternate', () => toast(context, 'Segera hadir')),
                 _menuRow(Icons.shield_outlined, 'Syarat & Kebijakan Privasi', 'Informasi penggunaan data & keamanan', () => toast(context, 'Segera hadir')),
               ]),
+
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: Colors.deepOrange, size: 16),
+main
             ),
-            gap(14),
-            SizedBox(
-              height: 54,
-              child: ElevatedButton.icon(
-                onPressed: () => logoutToSplash(context),
-                icon: const Icon(Icons.logout_rounded, size: 20),
-                label: Text('Keluar dari Akun (Logout)', style: ts(14, w: FontWeight.w800, c: AppColors.red)),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.redSoft,
-                    foregroundColor: AppColors.red,
-                    elevation: 0,
-                    shape: const StadiumBorder()),
+            const SizedBox(height: 8),
+            Text(
+              count,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
-            gap(14),
-            Center(
-              child: Column(children: [
-                Text('MakanKuy v2.4.0', style: ts(11, w: FontWeight.w700)),
-                Text('Bangga Buatan Ternate, Maluku Utara', style: ts(11, c: AppColors.muted)),
-              ]),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 10, color: Colors.grey),
             ),
-          ]),
+          ],
         ),
-      ]),
+      ),
+    );
+  }
+
+  // Widget kartu restoran favorit.
+  Widget _buildFavCard(
+    String title,
+    String subtitle,
+    String rating,
+    String status,
+  ) {
+    return Container(
+      width: 264,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.orange.shade100,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(10),
+              ),
+            ),
+            child: Stack(
+              children: [
+                const Center(
+                  child: Icon(Icons.restaurant, color: Colors.orange, size: 32),
+                ),
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.star, color: Colors.amber, size: 10),
+                        const SizedBox(width: 2),
+                        Text(
+                          rating,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      'Buka',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 9, color: Colors.grey),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      status,
+                      style: const TextStyle(
+                        fontSize: 9,
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.bookmark,
+                      size: 14,
+                      color: Colors.deepOrange,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget tag preferensi kuliner.
+  Widget _buildTag(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.orange.shade200),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.restaurant_menu, size: 10, color: Colors.deepOrange),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 10,
+              color: Colors.deepOrange,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

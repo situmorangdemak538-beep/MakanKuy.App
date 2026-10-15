@@ -1,5 +1,9 @@
 import 'package:flutter/foundation.dart';
+fitur/tegar
 import '../core/utils/format.dart';
+=======
+
+main
 import '../data/dummy_data.dart';
 import '../data/models/reservation.dart';
 import '../data/models/restaurant.dart';
@@ -76,8 +80,10 @@ class ReservationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get preorderTotal => preorder.entries
-      .fold(0, (sum, e) => sum + e.value * (preorderUnit[e.key] ?? 0));
+  int get preorderTotal => preorder.entries.fold(
+    0,
+    (sum, e) => sum + e.value * (preorderUnit[e.key] ?? 0),
+  );
 
   String get preorderText =>
       preorder.entries.map((e) => '${e.value}× ${e.key}').join(', ');
@@ -94,11 +100,53 @@ class ReservationProvider extends ChangeNotifier {
     preorderUnit.clear();
   }
 
+fitur/tegar
   /// DUMMY. Backend: POST /api/reservations
   Reservation submit(Restaurant r,
       {required String name,
       required String phone,
       int discountPercent = 0}) {
+
+  /// Slot dianggap terpakai jika reservasi masih menunggu atau sudah dikonfirmasi.
+  /// Reservasi yang dibatalkan/ditolak tidak lagi mengunci slot.
+  bool isSlotUnavailable({
+    required String restaurantId,
+    required DateTime date,
+    required String time,
+    Reservation? excludeReservation,
+  }) {
+    return incoming.any((reservation) {
+      if (excludeReservation != null &&
+          identical(reservation, excludeReservation)) {
+        return false;
+      }
+
+      final sameRestaurant = reservation.restaurantId == restaurantId;
+      final sameDate =
+          reservation.date.year == date.year &&
+          reservation.date.month == date.month &&
+          reservation.date.day == date.day;
+      final sameTime = reservation.time == time;
+      final occupiesSlot =
+          reservation.status == ReservationStatus.pending ||
+          reservation.status == ReservationStatus.confirmed;
+
+      return sameRestaurant && sameDate && sameTime && occupiesSlot;
+    });
+  }
+
+  /// DUMMY: nanti POST /api/reservations
+  Reservation submit(
+    Restaurant r, {
+    required String name,
+    required String phone,
+  }) {
+    final selectedTime = time ?? '19:00';
+
+    if (isSlotUnavailable(restaurantId: r.id, date: date, time: selectedTime)) {
+      throw StateError('Jadwal ini sudah dipesan. Silakan pilih jam lain.');
+    }
+main
     final res = Reservation(
       code: 'MK-TRN-${8830 + _seq++}',
       restaurantId: r.id,
@@ -106,9 +154,13 @@ class ReservationProvider extends ChangeNotifier {
       restaurantAddress: r.address,
       restaurantImage: r.image,
       date: date,
+fitur/tegar
       endDate: endDate,
       exclusive: exclusive,
       time: time ?? '19:00',
+
+      time: selectedTime,
+main
       tableLabel: seat,
       guests: guests,
       status: ReservationStatus.pending,
@@ -142,9 +194,11 @@ class ReservationProvider extends ChangeNotifier {
   List<Reservation> get approved =>
       incoming.where((r) => r.status == ReservationStatus.confirmed).toList();
   List<Reservation> get finished => incoming
-      .where((r) =>
-          r.status == ReservationStatus.completed ||
-          r.status == ReservationStatus.cancelled)
+      .where(
+        (r) =>
+            r.status == ReservationStatus.completed ||
+            r.status == ReservationStatus.cancelled,
+      )
       .toList();
  
   /// Semua reservasi lintas restoran (dipakai Administrator untuk monitoring).

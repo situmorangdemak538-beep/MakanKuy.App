@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+    Schema::create('restaurants', function (Blueprint $table) {
+    $table->id();
+    $table->string('nama');
+    $table->string('kategori');
+    $table->string('alamat');
+    $table->decimal('rating', 2, 1)->default(0);
+    $table->string('jam_buka');
+    $table->integer('harga_rata_rata');
+    $table->string('gambar')->nullable();
+    $table->timestamps();
+});
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('restaurants');
+    }
+};

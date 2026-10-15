@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../data/dummy_data.dart';
 import '../data/models/restaurant.dart';
 
@@ -68,9 +69,8 @@ class RestaurantProvider extends ChangeNotifier {
     final q = query.trim().toLowerCase();
     final list = all.where((r) {
       if (q.isNotEmpty) {
-        final hay =
-            '${r.name} ${r.category} ${r.specialty} ${r.tags.join(' ')}'
-                .toLowerCase();
+        final hay = '${r.name} ${r.category} ${r.specialty} ${r.tags.join(' ')}'
+            .toLowerCase();
         if (!hay.contains(q)) return false;
       }
       if (area != null && r.area != area) return false;
