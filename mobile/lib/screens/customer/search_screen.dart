@@ -33,7 +33,10 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Stack(children: [
             FoodImage(
-                path: r.image, height: 150, width: double.infinity, radius: 20),
+                path: r.image,
+                height: 150,
+                width: double.infinity,
+                radius: 20),
             if (r.badge != null)
               Positioned(
                   left: 8,
@@ -69,8 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ]),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 12, 8, 6),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Expanded(
                     child: Text(r.name,
@@ -78,8 +80,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 gapW(8),
                 Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                   Text(rb(r.priceFrom),
-                      style:
-                          ts(16, w: FontWeight.w800, c: AppColors.primaryDark)),
+                      style: ts(16, w: FontWeight.w800, c: AppColors.primaryDark)),
                   Text(r.priceNote, style: ts(11, c: AppColors.muted)),
                 ]),
               ]),
@@ -89,8 +90,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     size: 14, color: AppColors.primaryDark),
                 gapW(4),
                 Expanded(
-                    child: Text(
-                        '${r.address.split(',').first}, ${r.area} • ${r.distanceKm} km',
+                    child: Text('${r.address.split(',').first}, ${r.area} • ${r.distanceKm} km',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: ts(12, c: AppColors.muted))),
@@ -98,14 +98,12 @@ class _SearchScreenState extends State<SearchScreen> {
               gap(8),
               Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: box(color: Colors.white, r: 10),
                 child: Text.rich(
                   TextSpan(
                       text: '${r.specialtyLabel}: ',
-                      style:
-                          ts(12, w: FontWeight.w800, c: AppColors.primaryDark),
+                      style: ts(12, w: FontWeight.w800, c: AppColors.primaryDark),
                       children: [
                         TextSpan(
                             text: r.specialty,
@@ -122,12 +120,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     for (var i = 0; i < r.tags.length; i++)
                       Pill(
                           text: r.tags[i],
-                          bg: i == 0
-                              ? AppColors.greenSoft
-                              : AppColors.amberSoft,
-                          fg: i == 0
-                              ? AppColors.green
-                              : const Color(0xFF6B4400),
+                          bg: i == 0 ? AppColors.greenSoft : AppColors.amberSoft,
+                          fg: i == 0 ? AppColors.green : const Color(0xFF6B4400),
                           fontSize: 10),
                   ]),
                 ),
@@ -201,8 +195,7 @@ class _SearchScreenState extends State<SearchScreen> {
               if (rp.query.isNotEmpty)
                 IconButton(
                     onPressed: () => rp.setQuery(''),
-                    icon: const Icon(Icons.cancel_rounded,
-                        color: AppColors.muted)),
+                    icon: const Icon(Icons.cancel_rounded, color: AppColors.muted)),
               Container(
                 width: 42,
                 height: 42,
@@ -275,8 +268,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   children: [
                     TextSpan(
                         text: '${results.length} Resto UMKM',
-                        style: ts(13,
-                            w: FontWeight.w800, c: AppColors.primaryDark)),
+                        style: ts(13, w: FontWeight.w800, c: AppColors.primaryDark)),
                     TextSpan(text: ' di ${rp.area ?? 'Ternate'}'),
                   ])),
             ),

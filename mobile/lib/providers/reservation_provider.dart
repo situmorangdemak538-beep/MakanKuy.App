@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../core/utils/format.dart';
 import '../data/dummy_data.dart';
 import '../data/models/reservation.dart';
 import '../data/models/restaurant.dart';
@@ -10,6 +11,8 @@ class ReservationProvider extends ChangeNotifier {
 
   // ---------- Draft form reservasi ----------
   DateTime date = DateTime.now().add(const Duration(days: 1));
+  DateTime? endDate; // terisi bila booking periode
+  bool exclusive = false; // true = booking seluruh tempat (kunci tanggal)
   String? time = '19:00';
   int guests = 4;
   String seat = 'Lesehan View Laut & Sunset';
@@ -18,9 +21,24 @@ class ReservationProvider extends ChangeNotifier {
   final Map<String, int> preorder = {};
   final Map<String, int> preorderUnit = {};
 
-  void setDate(DateTime d) {
+  void setDate(DateTime d, [DateTime? e]) {
     date = d;
+    endDate = e;
     notifyListeners();
+  }
+
+  void setExclusive(bool v) {
+    exclusive = v;
+    if (!v) endDate = null;
+    notifyListeners();
+  }
+
+  String get dateText {
+    final e = endDate;
+    if (e == null) {
+      return '${relDay(date)}, ${date.day} ${monthShort(date)} ${date.year}';
+    }
+    return '${date.day} ${monthShort(date)} – ${e.day} ${monthShort(e)} ${e.year}';
   }
 
   void setTime(String t) {
@@ -66,6 +84,8 @@ class ReservationProvider extends ChangeNotifier {
 
   void resetDraft() {
     date = DateTime.now().add(const Duration(days: 1));
+    endDate = null;
+    exclusive = false;
     time = '19:00';
     guests = 4;
     seat = 'Lesehan View Laut & Sunset';
@@ -74,45 +94,11 @@ class ReservationProvider extends ChangeNotifier {
     preorderUnit.clear();
   }
 
-  /// Slot dianggap terpakai jika reservasi masih menunggu atau sudah dikonfirmasi.
-  /// Reservasi yang dibatalkan/ditolak tidak lagi mengunci slot.
-  bool isSlotUnavailable({
-    required String restaurantId,
-    required DateTime date,
-    required String time,
-    Reservation? excludeReservation,
-  }) {
-    return incoming.any((reservation) {
-      if (excludeReservation != null &&
-          identical(reservation, excludeReservation)) {
-        return false;
-      }
-
-      final sameRestaurant = reservation.restaurantId == restaurantId;
-      final sameDate = reservation.date.year == date.year &&
-          reservation.date.month == date.month &&
-          reservation.date.day == date.day;
-      final sameTime = reservation.time == time;
-      final occupiesSlot =
-          reservation.status == ReservationStatus.pending ||
-          reservation.status == ReservationStatus.confirmed;
-
-      return sameRestaurant && sameDate && sameTime && occupiesSlot;
-    });
-  }
-
-  /// DUMMY: nanti POST /api/reservations
+  /// DUMMY. Backend: POST /api/reservations
   Reservation submit(Restaurant r,
-      {required String name, required String phone}) {
-    final selectedTime = time ?? '19:00';
-
-    if (isSlotUnavailable(
-      restaurantId: r.id,
-      date: date,
-      time: selectedTime,
-    )) {
-      throw StateError('Jadwal ini sudah dipesan. Silakan pilih jam lain.');
-    }
+      {required String name,
+      required String phone,
+      int discountPercent = 0}) {
     final res = Reservation(
       code: 'MK-TRN-${8830 + _seq++}',
       restaurantId: r.id,
@@ -120,7 +106,9 @@ class ReservationProvider extends ChangeNotifier {
       restaurantAddress: r.address,
       restaurantImage: r.image,
       date: date,
-      time: selectedTime,
+      endDate: endDate,
+      exclusive: exclusive,
+      time: time ?? '19:00',
       tableLabel: seat,
       guests: guests,
       status: ReservationStatus.pending,
@@ -130,6 +118,7 @@ class ReservationProvider extends ChangeNotifier {
       agoLabel: 'Baru saja',
       preorderText: preorderText,
       preorderTotal: preorderTotal,
+      discountPercent: discountPercent,
     );
     mine.insert(0, res);
     incoming.insert(0, res);
@@ -137,16 +126,16 @@ class ReservationProvider extends ChangeNotifier {
     notifyListeners();
     return res;
   }
-
+ 
   // ---------- Customer ----------
   List<Reservation> get active => mine.where((r) => r.isActive).toList();
   List<Reservation> get done => mine.where((r) => !r.isActive).toList();
-
+ 
   void cancel(Reservation r) {
     r.status = ReservationStatus.cancelled;
     notifyListeners();
   }
-
+ 
   // ---------- Admin ----------
   List<Reservation> get pending =>
       incoming.where((r) => r.status == ReservationStatus.pending).toList();
@@ -157,18 +146,28 @@ class ReservationProvider extends ChangeNotifier {
           r.status == ReservationStatus.completed ||
           r.status == ReservationStatus.cancelled)
       .toList();
-
-  /// DUMMY: nanti PUT /api/reservations/{id}/status
+ 
+  /// Semua reservasi lintas restoran (dipakai Administrator untuk monitoring).
+  List<Reservation> get everything {
+    final seen = <String>{};
+    final out = <Reservation>[];
+    for (final r in [...incoming, ...mine]) {
+      if (seen.add(r.code)) out.add(r);
+    }
+    return out;
+  }
+ 
+  /// DUMMY. Backend: PUT /api/reservations/{id}/status
   void approve(Reservation r) {
     r.status = ReservationStatus.confirmed;
     notifyListeners();
   }
-
+ 
   void reject(Reservation r) {
     r.status = ReservationStatus.cancelled;
     notifyListeners();
   }
-
+ 
   void complete(Reservation r) {
     r.status = ReservationStatus.completed;
     notifyListeners();

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../data/dummy_data.dart';
 import '../data/models/menu_item.dart';
 
@@ -15,12 +16,13 @@ class MenuProvider extends ChangeNotifier {
   }
 
   List<MenuItem> get adminList => items.where((m) {
-        final q = adminQuery.trim().toLowerCase();
-        final okQ = q.isEmpty || m.name.toLowerCase().contains(q);
-        final okC = adminCategory == 'Semua' ||
-            m.category.toLowerCase().contains(adminCategory.toLowerCase());
-        return okQ && okC;
-      }).toList();
+    final q = adminQuery.trim().toLowerCase();
+    final okQ = q.isEmpty || m.name.toLowerCase().contains(q);
+    final okC =
+        adminCategory == 'Semua' ||
+        m.category.toLowerCase().contains(adminCategory.toLowerCase());
+    return okQ && okC;
+  }).toList();
 
   int get total => items.length;
   int get availableCount => items.where((m) => m.available).length;
@@ -47,7 +49,13 @@ class MenuProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void update(MenuItem m, String name, int price, String category, String desc) {
+  void update(
+    MenuItem m,
+    String name,
+    int price,
+    String category,
+    String desc,
+  ) {
     m.name = name;
     m.price = price;
     m.category = category;

@@ -31,8 +31,8 @@ class SplashScreen extends StatelessWidget {
             height: 150,
             decoration: const BoxDecoration(
               color: Color(0xFFE3F8EE),
-              borderRadius:
-                  BorderRadius.vertical(top: Radius.elliptical(400, 60)),
+              borderRadius: BorderRadius.vertical(
+                  top: Radius.elliptical(400, 60)),
             ),
           ),
         ),
@@ -79,15 +79,11 @@ class SplashScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: ts(14, c: AppColors.muted, h: 1.6)),
               gap(20),
-              Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    _chip(Icons.set_meal_rounded, 'Gohu Ikan Tuna'),
-                    _chip(Icons.event_seat_rounded, 'Booking Instan'),
-                    _chip(Icons.local_cafe_rounded, 'Air Guraka'),
-                  ]),
+              Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
+                _chip(Icons.set_meal_rounded, 'Gohu Ikan Tuna'),
+                _chip(Icons.event_seat_rounded, 'Booking Instan'),
+                _chip(Icons.local_cafe_rounded, 'Air Guraka'),
+              ]),
               gap(26),
               PrimaryButton(
                   label: 'Mulai Jelajah Rasa',
@@ -99,8 +95,8 @@ class SplashScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () => _toLogin(context),
                   child: Text('Masuk',
-                      style:
-                          ts(14, w: FontWeight.w800, c: AppColors.primaryDark)),
+                      style: ts(14,
+                          w: FontWeight.w800, c: AppColors.primaryDark)),
                 ),
               ]),
               gap(28),

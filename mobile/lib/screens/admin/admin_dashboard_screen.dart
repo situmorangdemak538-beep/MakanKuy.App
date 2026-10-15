@@ -83,21 +83,14 @@ class AdminDashboardScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   const Row(
                     children: [
-                      Icon(
-                        Icons.circle,
-                        color: Colors.green,
-                        size: 8,
-                      ),
+                      Icon(Icons.circle, color: Colors.green, size: 8),
                       SizedBox(width: 5),
                       Expanded(
                         child: Text(
                           'RM Gohu Ikan Gamalama • Buka',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: _textSecondary,
-                            fontSize: 11,
-                          ),
+                          style: TextStyle(color: _textSecondary, fontSize: 11),
                         ),
                       ),
                     ],
@@ -127,10 +120,7 @@ class AdminDashboardScreen extends StatelessWidget {
 
               const Text(
                 'Pantau aktivitas restoran kamu hari ini.',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: _textSecondary,
-                ),
+                style: TextStyle(fontSize: 13, color: _textSecondary),
               ),
 
               const SizedBox(height: 20),
@@ -205,9 +195,7 @@ class AdminDashboardScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: const Color(0xFFEEEEEE),
-                  ),
+                  border: Border.all(color: const Color(0xFFEEEEEE)),
                 ),
                 child: const Row(
                   children: [
@@ -277,9 +265,7 @@ class _SummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFEEEEEE),
-        ),
+        border: Border.all(color: const Color(0xFFEEEEEE)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.025),
@@ -314,11 +300,7 @@ class _SummaryCard extends StatelessWidget {
                   color: iconBackground,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(
-                  icon,
-                  color: iconColor,
-                  size: 19,
-                ),
+                child: Icon(icon, color: iconColor, size: 19),
               ),
             ],
           ),
@@ -340,10 +322,7 @@ class _SummaryCard extends StatelessWidget {
             subtitle,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: Color(0xFF9E9E9E),
-              fontSize: 11,
-            ),
+            style: const TextStyle(color: Color(0xFF9E9E9E), fontSize: 11),
           ),
         ],
       ),
