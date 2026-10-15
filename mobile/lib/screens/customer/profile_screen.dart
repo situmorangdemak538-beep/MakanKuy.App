@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../core/session.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/common.dart';
-import '../../data/dummy_data.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/reservation_provider.dart';
 import '../../providers/restaurant_provider.dart';
