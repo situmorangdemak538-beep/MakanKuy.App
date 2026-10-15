@@ -3,20 +3,22 @@ import 'package:provider/provider.dart';
 import '../../core/session.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/common.dart';
+import '../../data/dummy_data.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/reservation_provider.dart';
 import '../../providers/restaurant_provider.dart';
+import '../partner/register_restaurant_screen.dart';
 import 'restaurant_detail_screen.dart';
-
+ 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
-
+ 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _reminder = true;
-
+ 
   Widget _stat(IconData i, Color bg, String v, String l) => Expanded(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -34,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ]),
         ),
       );
-
+ 
   Widget _menuRow(IconData i, String t, String sub, VoidCallback onTap,
       {bool highlight = false, String? tag}) {
     return GestureDetector(
@@ -69,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
+ 
   void _edit(BuildContext context) {
     final auth = context.read<AuthProvider>();
     final name = TextEditingController(text: auth.user?.name);
@@ -98,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
@@ -106,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final res = context.watch<ReservationProvider>();
     final favs = rp.all.where((r) => rp.saved.contains(r.id)).toList();
     final doneCount = res.mine.where((r) => r.status.name == 'completed').length + 12;
-
+ 
     return Scaffold(
       body: Column(children: [
         const BrandHeader(eyebrow: 'MAKANKUY TERNATE', title: 'Profil Pengguna'),
@@ -277,7 +279,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Text('Pengaturan & Bantuan', style: ts(16, w: FontWeight.w800)),
                 ),
                 _menuRow(Icons.notifications_none_rounded, 'Metode Notifikasi', 'WhatsApp & Push App', () => toast(context, 'Segera hadir')),
-                _menuRow(Icons.storefront_rounded, 'Daftarkan Warung/Resto Anda', 'Gabung Komunitas Mitra Kuliner MakanKuy', () => toast(context, 'Pendaftaran mitra segera hadir'), highlight: true, tag: 'GRATIS'),
+                _menuRow(Icons.storefront_rounded, 'Daftarkan Warung/Resto Anda', 'Gabung Komunitas Mitra Kuliner MakanKuy', () => openRegisterRestaurant(context), highlight: true, tag: 'GRATIS'),
                 _menuRow(Icons.support_agent_rounded, 'Pusat Bantuan & Komunitas', 'Bantuan pesan meja & tanya foodie Ternate', () => toast(context, 'Segera hadir')),
                 _menuRow(Icons.shield_outlined, 'Syarat & Kebijakan Privasi', 'Informasi penggunaan data & keamanan', () => toast(context, 'Segera hadir')),
               ]),

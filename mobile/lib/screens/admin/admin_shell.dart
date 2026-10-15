@@ -4,15 +4,16 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/common.dart';
 import '../../providers/nav_provider.dart';
 import '../../providers/reservation_provider.dart';
+import '../shared/promo_manager_screen.dart';
 import 'admin_dashboard_screen.dart';
 import 'admin_menu_screen.dart';
+import 'admin_profile_screen.dart';
 import 'admin_reservations_screen.dart';
-import 'admin_store_screen.dart';
-
+ 
 /// Header khusus Admin Restoran (MakanKuy Partner)
 class AdminHeader extends StatelessWidget {
   const AdminHeader({super.key});
-
+ 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -57,10 +58,10 @@ class AdminHeader extends StatelessWidget {
     );
   }
 }
-
+ 
 class AdminShell extends StatelessWidget {
   const AdminShell({super.key});
-
+ 
   @override
   Widget build(BuildContext context) {
     final nav = context.watch<NavProvider>();
@@ -70,7 +71,8 @@ class AdminShell extends StatelessWidget {
         AdminDashboardScreen(),
         AdminReservationsScreen(),
         AdminMenuScreen(),
-        AdminStoreScreen(),
+        PromoManagerScreen(isAdministrator: false, restaurantId: 'r1', header: AdminHeader()),
+        AdminProfileScreen(),
       ]),
       bottomNavigationBar: AppBottomNav(
         index: nav.index,
@@ -79,7 +81,8 @@ class AdminShell extends StatelessWidget {
           const NavItemData(Icons.bar_chart_rounded, 'Ringkasan'),
           NavItemData(Icons.receipt_long_rounded, 'Reservasi', badge: pending),
           const NavItemData(Icons.restaurant_menu_rounded, 'Menu'),
-          const NavItemData(Icons.storefront_outlined, 'Toko'),
+          const NavItemData(Icons.local_offer_rounded, 'Diskon'),
+          const NavItemData(Icons.storefront_outlined, 'Profil'),
         ],
       ),
     );

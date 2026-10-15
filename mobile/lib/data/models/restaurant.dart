@@ -1,3 +1,5 @@
+enum RestaurantStatus { pending, approved, rejected }
+
 class Restaurant {
   final String id, name, category, area, address, image;
   final double distanceKm, rating;
@@ -6,6 +8,12 @@ class Restaurant {
   final String? badge, highlight;
   final List<String> tags;
   final bool isPopular, isNearby;
+
+  // ---- baru: data warung ----
+  final int totalTables, seatsPerTable;
+  final String openTime, closeTime, ownerName, description;
+  final List<String> openDays, facilities;
+  RestaurantStatus status;
 
   Restaurant({
     required this.id,
@@ -31,6 +39,15 @@ class Restaurant {
     this.hours = '10:00 - 22:00 WIT',
     this.whatsapp = '+62 812-4421-9870',
     this.driveMinutes = 4,
+    this.totalTables = 10,
+    this.seatsPerTable = 4,
+    this.openTime = '10:00',
+    this.closeTime = '22:00',
+    this.openDays = const ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+    this.facilities = const [],
+    this.ownerName = '',
+    this.description = '',
+    this.status = RestaurantStatus.approved,
   }) : priceTo = priceTo ?? priceFrom;
 
   String get distanceLabel => distanceKm < 1

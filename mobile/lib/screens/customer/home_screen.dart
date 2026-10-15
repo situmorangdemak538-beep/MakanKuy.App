@@ -3,64 +3,17 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/widgets/common.dart';
+import '../../core/widgets/promo_banner.dart';
 import '../../data/models/restaurant.dart';
 import '../../providers/nav_provider.dart';
 import '../../providers/restaurant_provider.dart';
+import '../partner/register_restaurant_screen.dart';
 import 'reservation_form_screen.dart';
 import 'restaurant_detail_screen.dart';
-
+ 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  Widget _promo(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(26),
-        gradient: const LinearGradient(
-            colors: [Color(0xFFFF6B35), Color(0xFFB8420F)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight),
-      ),
-      child: Stack(children: [
-        Positioned(
-          right: 0,
-          top: 0,
-          child: Icon(Icons.restaurant_menu_rounded,
-              size: 90, color: Colors.white.withAlpha(40)),
-        ),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Pill(
-              text: 'SPESIAL PEKAN INI',
-              bg: Colors.white.withAlpha(60),
-              fg: Colors.white,
-              icon: Icons.local_fire_department),
-          gap(10),
-          Text('Diskon Meja 25% Hari Ini!',
-              style: ts(21, w: FontWeight.w800, c: Colors.white)),
-          gap(6),
-          Text('Nikmati kuliner legendaris pesisir Ternate bersama kerabat & keluarga tercinta.',
-              style: ts(13, c: Colors.white, h: 1.4)),
-          gap(14),
-          Row(children: [
-            ElevatedButton.icon(
-              onPressed: () => toast(context, 'Voucher berhasil diklaim!'),
-              icon: const Icon(Icons.confirmation_number_outlined, size: 18),
-              label: Text('Klaim Voucher',
-                  style: ts(13, w: FontWeight.w800, c: AppColors.ink)),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: AppColors.ink,
-                  shape: const StadiumBorder()),
-            ),
-            gapW(12),
-            Text('Sisa 8 Kupon', style: ts(12, c: Colors.white)),
-          ]),
-        ]),
-      ]),
-    );
-  }
-
+ 
   Widget _popularCard(BuildContext context, Restaurant r) {
     return GestureDetector(
       onTap: () => openRestaurant(context, r),
@@ -130,7 +83,7 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
+ 
   Widget _nearbyTile(BuildContext context, Restaurant r) {
     return GestureDetector(
       onTap: () => openRestaurant(context, r),
@@ -198,19 +151,19 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     final rp = context.watch<RestaurantProvider>();
     final nav = context.read<NavProvider>();
-
+ 
     void searchFor(String q) {
       context.read<RestaurantProvider>()
         ..setQuery(q)
         ..setArea(null);
       nav.go(1);
     }
-
+ 
     return Scaffold(
       body: Column(children: [
         const BrandHeader(title: 'MakanKuy', subtitle: 'Beranda • Ternate'),
@@ -297,7 +250,7 @@ class HomeScreen extends StatelessWidget {
                 ]),
               ),
               gap(16),
-              _promo(context),
+              const PromoBanner(),
               gap(22),
               SectionTitle(
                   title: 'Restoran UMKM Populer',
@@ -344,7 +297,7 @@ class HomeScreen extends StatelessWidget {
                     ]),
                   ),
                   ElevatedButton(
-                    onPressed: () => toast(context, 'Pendaftaran mitra segera hadir'),
+                    onPressed: () => openRegisterRestaurant(context),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.ink,
