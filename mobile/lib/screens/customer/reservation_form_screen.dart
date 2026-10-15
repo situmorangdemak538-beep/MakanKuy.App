@@ -135,13 +135,15 @@ class ReservationFormScreen extends StatelessWidget {
       toast(context, 'Tanggal yang dipilih penuh atau sudah dipesan klien lain');
       return;
     }
-    final voucher = context.read<PromoProvider>().applied;
-    final useVoucher = voucher != null &&
-        (voucher.restaurantId == null || voucher.restaurantId == restaurant.id);
-    final res = p.submit(restaurant,
-        name: auth.user?.name ?? 'Pelanggan',
-        phone: auth.user?.phone ?? '',
-        discountPercent: useVoucher ? (voucher?.percent ?? 0) : 0);
+final voucher = context.read<PromoProvider>().applied;
+final discount = (voucher != null &&
+        (voucher.restaurantId == null || voucher.restaurantId == restaurant.id))
+    ? voucher.percent
+    : 0;
+final res = p.submit(restaurant,
+    name: auth.user?.name ?? 'Pelanggan',
+    phone: auth.user?.phone ?? '',
+    discountPercent: discount);
     if (exclusive) {
       // Booking seluruh tempat -> kunci periode agar klien lain tidak bisa memilihnya.
       av.lock(restaurant.id, start, end, res.code, reason: 'Dipesan klien lain');
