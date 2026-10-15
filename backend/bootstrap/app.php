@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
+        // Tambahkan baris ini untuk handle API authentication dengan benar
+        $middleware->redirectGuestsTo(fn () => null);
+        $middleware->redirectUsersTo(fn () => null);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -25,7 +25,7 @@ class RestaurantController extends Controller
         } else {
             $query->latest();
         }
-
+        
         return response()->json([
             'message' => 'Daftar restaurant berhasil diambil',
             'data' => $query->get(),
