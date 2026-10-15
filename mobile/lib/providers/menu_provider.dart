@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../data/dummy_data.dart';
 import '../data/models/menu_item.dart';
 

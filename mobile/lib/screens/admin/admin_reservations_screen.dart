@@ -4,18 +4,19 @@ import '../../core/theme/app_colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/widgets/common.dart';
 import '../../data/models/reservation.dart';
+import '../../providers/availability_provider.dart';
 import '../../providers/reservation_provider.dart';
 import 'admin_shell.dart';
-
+ 
 class AdminReservationsScreen extends StatefulWidget {
   const AdminReservationsScreen({super.key});
   @override
   State<AdminReservationsScreen> createState() => _AdminReservationsScreenState();
 }
-
+ 
 class _AdminReservationsScreenState extends State<AdminReservationsScreen> {
   int _tab = 0;
-
+ 
   Widget _info(IconData i, Color bg, String label, String value, {Color? vc}) => Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(10),
@@ -36,7 +37,7 @@ class _AdminReservationsScreenState extends State<AdminReservationsScreen> {
           ),
         ]),
       );
-
+ 
   Widget _card(BuildContext context, Reservation r) {
     final p = context.read<ReservationProvider>();
     final pending = r.status == ReservationStatus.pending;
@@ -112,7 +113,10 @@ class _AdminReservationsScreenState extends State<AdminReservationsScreen> {
                 SizedBox(
                   height: 50,
                   child: ElevatedButton.icon(
-                    onPressed: () => p.reject(r),
+                    onPressed: () {
+                      p.reject(r);
+                      context.read<AvailabilityProvider>().unlock(r.code);
+                    },
                     icon: const Icon(Icons.close_rounded, size: 18),
                     label: Text('Tolak', style: ts(13, w: FontWeight.w800, c: AppColors.red)),
                     style: ElevatedButton.styleFrom(
@@ -147,14 +151,14 @@ class _AdminReservationsScreenState extends State<AdminReservationsScreen> {
       ]),
     );
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     final rp = context.watch<ReservationProvider>();
     final lists = [rp.pending, rp.approved, rp.finished];
     final labels = ['Menunggu Konfirmasi', 'Disetujui Hari Ini', 'Selesai'];
     final list = lists[_tab];
-
+ 
     return Scaffold(
       body: Column(children: [
         const AdminHeader(),

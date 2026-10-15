@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 import '../../core/widgets/common.dart';
+fitur/tegar
+import '../../providers/nav_provider.dart';
+import '../../providers/reservation_provider.dart';
+import '../shared/promo_manager_screen.dart';
+
+main
 import 'admin_dashboard_screen.dart';
 import 'admin_menu_screen.dart';
+import 'admin_profile_screen.dart';
 import 'admin_reservations_screen.dart';
+fitur/tegar
+ 
+/// Header khusus Admin Restoran (MakanKuy Partner)
+
 import 'admin_store_screen.dart';
 
 /// Header Antarmuka Admin Restoran (MakanKuy Partner)
+main
 class AdminHeader extends StatelessWidget {
   const AdminHeader({super.key});
-
+ 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -71,11 +83,16 @@ class AdminHeader extends StatelessWidget {
     );
   }
 }
+fitur/tegar
+ 
+class AdminShell extends StatelessWidget {
+
 
 /// Wadah Navigasi Bawah Khusus Admin Restoran
 class AdminShell extends StatefulWidget {
+main
   const AdminShell({super.key});
-
+ 
   @override
   State<AdminShell> createState() => _AdminShellState();
 }
@@ -93,6 +110,24 @@ class _AdminShellState extends State<AdminShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+fitur/tegar
+      body: IndexedStack(index: nav.index, children: const [
+        AdminDashboardScreen(),
+        AdminReservationsScreen(),
+        AdminMenuScreen(),
+        PromoManagerScreen(isAdministrator: false, restaurantId: 'r1', header: AdminHeader()),
+        AdminProfileScreen(),
+      ]),
+      bottomNavigationBar: AppBottomNav(
+        index: nav.index,
+        onTap: nav.go,
+        items: [
+          const NavItemData(Icons.bar_chart_rounded, 'Ringkasan'),
+          NavItemData(Icons.receipt_long_rounded, 'Reservasi', badge: pending),
+          const NavItemData(Icons.restaurant_menu_rounded, 'Menu'),
+          const NavItemData(Icons.local_offer_rounded, 'Diskon'),
+          const NavItemData(Icons.storefront_outlined, 'Profil'),
+
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
@@ -129,6 +164,7 @@ class _AdminShellState extends State<AdminShell> {
             icon: Icon(Icons.storefront_rounded),
             label: 'Toko',
           ),
+main
         ],
       ),
     );

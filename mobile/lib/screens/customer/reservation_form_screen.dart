@@ -4,35 +4,38 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format.dart';
+import '../../core/widgets/availability_calendar.dart';
 import '../../core/widgets/common.dart';
 import '../../data/models/restaurant.dart';
 import '../../data/models/reservation.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/availability_provider.dart';
 import '../../providers/nav_provider.dart';
+import '../../providers/promo_provider.dart';
 import '../../providers/reservation_provider.dart';
-
+ 
 void openReservation(BuildContext context, Restaurant r) {
   Navigator.of(context).push(
     MaterialPageRoute(builder: (_) => ReservationFormScreen(restaurant: r)),
   );
 }
-
+ 
 class _Slot {
   final String time;
   final String sub;
   final bool full;
   const _Slot(this.time, this.sub, {this.full = false});
 }
-
+ 
 class _Seat {
   final String name, desc, tag, left, image;
   const _Seat(this.name, this.desc, this.tag, this.left, this.image);
 }
-
+ 
 class ReservationFormScreen extends StatelessWidget {
   final Restaurant restaurant;
   const ReservationFormScreen({super.key, required this.restaurant});
-
+ 
   static const _lunch = [
     _Slot('11:30', ''),
     _Slot('12:00', ''),
@@ -67,7 +70,7 @@ class ReservationFormScreen extends StatelessWidget {
       'assets/images/seat_gazebo.jpg',
     ),
   ];
-
+ 
   Widget _step(int n, String title, {Widget? trailing}) => Padding(
     padding: const EdgeInsets.only(top: 18, bottom: 10),
     child: Row(
@@ -80,6 +83,14 @@ class ReservationFormScreen extends StatelessWidget {
             color: AppColors.primary,
             shape: BoxShape.circle,
           ),
+fitur/tegar
+          gapW(10),
+          Expanded(child: Text(title, style: ts(16, w: FontWeight.w800))),
+          if (trailing != null) trailing,
+        ]),
+      );
+ 
+
           child: Text(
             '$n',
             style: ts(12, w: FontWeight.w800, c: Colors.white),
@@ -94,6 +105,7 @@ class ReservationFormScreen extends StatelessWidget {
     ),
   );
 
+main
   Widget _slotGrid(ReservationProvider p, List<_Slot> slots, int cols) {
     return GridView.count(
       crossAxisCount: cols,
@@ -152,8 +164,24 @@ class ReservationFormScreen extends StatelessWidget {
       }).toList(),
     );
   }
-
+ 
   Widget _row(IconData i, String label, String value, {Color? vc}) => Padding(
+fitur/tegar
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(i, size: 18, color: AppColors.muted),
+          gapW(8),
+          SizedBox(
+              width: 82,
+              child: Text(label, style: ts(12, c: AppColors.muted))),
+          Expanded(
+              child: Text(value,
+                  textAlign: TextAlign.right,
+                  style: ts(13, w: FontWeight.w800, c: vc))),
+        ]),
+      );
+ 
+
     padding: const EdgeInsets.symmetric(vertical: 6),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,6 +203,7 @@ class ReservationFormScreen extends StatelessWidget {
     ),
   );
 
+main
   Future<void> _submit(BuildContext context) async {
     final p = context.read<ReservationProvider>();
     final auth = context.read<AuthProvider>();
@@ -183,6 +212,27 @@ class ReservationFormScreen extends StatelessWidget {
       toast(context, 'Pilih jam kedatangan terlebih dahulu');
       return;
     }
+fitur/tegar
+    final av = context.read<AvailabilityProvider>();
+    final start = p.date;
+    final end = p.endDate ?? p.date;
+    final exclusive = p.exclusive;
+    if (!av.rangeFree(restaurant.id, start, end)) {
+      toast(context, 'Tanggal yang dipilih penuh atau sudah dipesan klien lain');
+      return;
+    }
+    final voucher = context.read<PromoProvider>().applied;
+    final useVoucher = voucher != null &&
+        (voucher.restaurantId == null || voucher.restaurantId == restaurant.id);
+    final res = p.submit(restaurant,
+        name: auth.user?.name ?? 'Pelanggan',
+        phone: auth.user?.phone ?? '',
+        discountPercent: useVoucher ? (voucher?.percent ?? 0) : 0);
+    if (exclusive) {
+      // Booking seluruh tempat -> kunci periode agar klien lain tidak bisa memilihnya.
+      av.lock(restaurant.id, start, end, res.code, reason: 'Dipesan klien lain');
+    }
+
     late final Reservation res;
     try {
       res = p.submit(
@@ -199,6 +249,7 @@ class ReservationFormScreen extends StatelessWidget {
       return;
     }
 
+main
     await showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -228,16 +279,128 @@ class ReservationFormScreen extends StatelessWidget {
     Navigator.of(context).popUntil((r) => r.isFirst);
     nav.go(2);
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     final p = context.watch<ReservationProvider>();
     final auth = context.watch<AuthProvider>();
     final r = restaurant;
-    final today = DateTime.now();
-    final days = List.generate(7, (i) => today.add(Duration(days: i)));
-
+    final av = context.watch<AvailabilityProvider>();
+    final applied = context.watch<PromoProvider>().applied;
+    final voucher = (applied != null &&
+            (applied.restaurantId == null || applied.restaurantId == r.id))
+        ? applied
+        : null;
+ 
     return Scaffold(
+fitur/tegar
+      body: Column(children: [
+        DetailTopBar(
+          title: 'Formulir Reservasi',
+          onShare: () => Share.share('Reservasi di ${r.name} via MakanKuy'),
+        ),
+        Expanded(
+          child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 16), children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: box(color: AppColors.surface, r: 20),
+              child: Row(children: [
+                Stack(children: [
+                  FoodImage(path: r.image, width: 72, height: 72, radius: 14),
+                  const Positioned(
+                      left: 4,
+                      bottom: 4,
+                      child: Pill(text: 'Buka', bg: AppColors.green, fg: Colors.white, fontSize: 9)),
+                ]),
+                gapW(12),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('KULINER KHAS GAMALAMA',
+                        style: ts(9, w: FontWeight.w800, c: AppColors.primaryDark)),
+                    Text(r.name, style: ts(15, w: FontWeight.w800)),
+                    Text(r.address.split(',').first,
+                        style: ts(11, c: AppColors.muted)),
+                    gap(4),
+                    const Pill(
+                        text: 'AC & Lesehan Tepi Laut',
+                        bg: AppColors.greenSoft,
+                        fg: AppColors.green,
+                        fontSize: 9),
+                  ]),
+                ),
+              ]),
+            ),
+            _step(1, 'Pilih Tanggal',
+                trailing: Text(
+                    av.freeCount(r.id, 14) == 0
+                        ? 'Penuh 14 hari ke depan'
+                        : '${av.freeCount(r.id, 14)}/14 hari tersedia',
+                    style: ts(11, w: FontWeight.w700, c: AppColors.green))),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: box(color: AppColors.surface, r: 18),
+              child: Column(children: [
+                Row(children: [
+                  const Icon(Icons.lock_clock_rounded, size: 18, color: AppColors.primaryDark),
+                  gapW(8),
+                  Expanded(
+                      child: Text('Booking seluruh tempat (acara / periode)',
+                          style: ts(13, w: FontWeight.w800))),
+                  Switch(
+                      value: p.exclusive,
+                      activeColor: Colors.white,
+                      activeTrackColor: AppColors.green,
+                      onChanged: p.setExclusive),
+                ]),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      p.exclusive
+                          ? 'Ketuk tanggal mulai lalu tanggal akhir. Periode ini akan DIKUNCI untuk klien lain.'
+                          : 'Pilih satu tanggal. Tanggal penuh / sudah dipesan klien lain tidak bisa dipilih.',
+                      style: ts(11, c: AppColors.muted, h: 1.4)),
+                ),
+                gap(10),
+                AvailabilityCalendar(
+                  restaurantId: r.id,
+                  start: p.date,
+                  end: p.endDate,
+                  allowRange: p.exclusive,
+                  onChanged: p.setDate,
+                ),
+                if (voucher != null) ...[
+                  gap(10),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10),
+                    decoration: box(color: AppColors.greenSoft, r: 12),
+                    child: Row(children: [
+                      const Icon(Icons.local_offer_rounded, size: 18, color: AppColors.green),
+                      gapW(8),
+                      Expanded(
+                          child: Text('Voucher dipakai: ${voucher.title} (-${voucher.percent}% pre-order)',
+                              style: ts(11, w: FontWeight.w800, c: AppColors.green))),
+                    ]),
+                  ),
+                ],
+              ]),
+            ),
+            _step(2, 'Pilih Jam Kedatangan',
+                trailing: Text('Waktu Indonesia Timur (WIT)',
+                    style: ts(10, c: AppColors.muted))),
+            Text('Makan Siang (Lunch)', style: ts(12, w: FontWeight.w700, c: AppColors.muted)),
+            gap(8),
+            _slotGrid(p, _lunch, 3),
+            gap(12),
+            Text('Makan Malam (Dinner)', style: ts(12, w: FontWeight.w700, c: AppColors.muted)),
+            gap(8),
+            _slotGrid(p, _dinner, 2),
+            _step(3, 'Jumlah Kursi'),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: box(color: AppColors.surface, r: 18),
+              child: Row(children: [
+
       body: Column(
         children: [
           DetailTopBar(
@@ -248,6 +411,7 @@ class ReservationFormScreen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
               children: [
+main
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: box(color: AppColors.surface, r: 20),
@@ -460,6 +624,19 @@ class ReservationFormScreen extends StatelessWidget {
                     'Suasana Khas',
                     style: ts(11, w: FontWeight.w700, c: AppColors.green),
                   ),
+fitur/tegar
+                  const Pill(text: 'Garansi Meja', bg: AppColors.greenSoft, fg: AppColors.green),
+                ]),
+                gap(8),
+                _row(Icons.calendar_month_outlined, 'Tanggal & Waktu',
+                    '${p.dateText} • ${p.time ?? '-'} WIT'),
+                _row(Icons.event_seat_outlined, 'Tamu & Posisi Meja', '${p.guests} Orang (${p.seat})'),
+                _row(Icons.restaurant_menu_rounded, 'Menu Pre-order',
+                    p.preorder.isEmpty
+                        ? 'Belum ada (pesan di tempat)'
+                        : '${p.preorderText}\n${rupiah(p.preorderTotal)} (Bayar di Kasir)'),
+                gap(6),
+
                 ),
                 ..._seats.map((s) {
                   final sel = p.seat == s.name;
@@ -547,6 +724,7 @@ class ReservationFormScreen extends StatelessWidget {
                   'Permintaan Khusus',
                   trailing: Text('Opsional', style: ts(11, c: AppColors.muted)),
                 ),
+main
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: box(
