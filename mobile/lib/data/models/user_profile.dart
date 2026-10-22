@@ -1,4 +1,12 @@
-enum AppRole { customer, admin }
+enum AppRole { customer, admin, administrator }
+
+extension AppRoleX on AppRole {
+  String get label => switch (this) {
+        AppRole.customer => 'Customer',
+        AppRole.admin => 'Admin Restoran',
+        AppRole.administrator => 'Administrator',
+      };
+}
 
 class UserProfile {
   String name;

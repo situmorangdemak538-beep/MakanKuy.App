@@ -1,13 +1,36 @@
 import 'package:flutter/material.dart';
+fitur/tegar
+import 'package:provider/provider.dart';
+import '../../core/session.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/widgets/common.dart';
+import '../../data/dummy_data.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/reservation_provider.dart';
+import '../../providers/restaurant_provider.dart';
+import '../partner/register_restaurant_screen.dart';
+import 'restaurant_detail_screen.dart';
+ 
 
+
+main
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
-
+ 
 class _ProfileScreenState extends State<ProfileScreen> {
+fitur/tegar
+  bool _reminder = true;
+ 
+  Widget _stat(IconData i, Color bg, String v, String l) => Expanded(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: box(color: AppColors.surface, r: 20),
+          child: Column(children: [
+
   // Status pengingat WhatsApp.
   bool _whatsappNotification = true;
 
@@ -23,6 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
+            main
             Container(
               width: 30,
               height: 30,
@@ -52,6 +76,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
+fitur/tegar
+      );
+ 
+  Widget _menuRow(IconData i, String t, String sub, VoidCallback onTap,
+      {bool highlight = false, String? tag}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: box(color: highlight ? Colors.white : Colors.transparent, r: 16),
+        child: Row(children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+                color: highlight ? AppColors.peach : AppColors.surface, shape: BoxShape.circle),
+            child: Icon(i, size: 20, color: highlight ? AppColors.primaryDark : AppColors.muted),
+
         actions: [
           IconButton(
             icon: const Icon(
@@ -62,6 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               _showMessage('Fitur notifikasi');
             },
+main
           ),
           IconButton(
             icon: const Icon(
@@ -75,6 +119,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
+fitur/tegar
+    );
+  }
+ 
+  void _edit(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+    final name = TextEditingController(text: auth.user?.name);
+    final phone = TextEditingController(text: auth.user?.phone);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.fromLTRB(20, 20, 20, MediaQuery.of(ctx).viewInsets.bottom + 20),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('Edit Profil', style: ts(18, w: FontWeight.w800)),
+          gap(14),
+          TextField(controller: name, decoration: const InputDecoration(hintText: 'Nama lengkap')),
+          gap(10),
+          TextField(controller: phone, keyboardType: TextInputType.phone, decoration: const InputDecoration(hintText: 'Nomor WhatsApp')),
+          gap(16),
+          PrimaryButton(
+              label: 'Simpan',
+              onPressed: () {
+                auth.updateProfile(name.text.trim(), phone.text.trim());
+                Navigator.pop(ctx);
+              }),
+        ]),
+      ),
+    );
+  }
+ 
+  @override
+  Widget build(BuildContext context) {
+    final user = context.watch<AuthProvider>().user;
+    final rp = context.watch<RestaurantProvider>();
+    final res = context.watch<ReservationProvider>();
+    final favs = rp.all.where((r) => rp.saved.contains(r.id)).toList();
+    final doneCount = res.mine.where((r) => r.status.name == 'completed').length + 12;
+ 
+    return Scaffold(
+      body: Column(children: [
+        const BrandHeader(eyebrow: 'MAKANKUY TERNATE', title: 'Profil Pengguna'),
+        Expanded(
+          child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 24), children: [
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: box(color: AppColors.surface, r: 26),
+              child: Column(children: [
+                Stack(children: [
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(color: AppColors.green, shape: BoxShape.circle),
+                    child: const Avatar(size: 92),
 
       // Isi profil pengguna.
       body: ListView(
@@ -230,6 +329,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Icons.favorite_border_rounded,
                     size: 16,
                     color: Colors.deepOrange,
+main
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -499,12 +599,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             Container(
+fitur/tegar
+              padding: const EdgeInsets.all(12),
+              decoration: box(color: AppColors.surface, r: 24),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
+                  child: Text('Pengaturan & Bantuan', style: ts(16, w: FontWeight.w800)),
+                ),
+                _menuRow(Icons.notifications_none_rounded, 'Metode Notifikasi', 'WhatsApp & Push App', () => toast(context, 'Segera hadir')),
+                _menuRow(Icons.storefront_rounded, 'Daftarkan Warung/Resto Anda', 'Gabung Komunitas Mitra Kuliner MakanKuy', () => openRegisterRestaurant(context), highlight: true, tag: 'GRATIS'),
+                _menuRow(Icons.support_agent_rounded, 'Pusat Bantuan & Komunitas', 'Bantuan pesan meja & tanya foodie Ternate', () => toast(context, 'Segera hadir')),
+                _menuRow(Icons.shield_outlined, 'Syarat & Kebijakan Privasi', 'Informasi penggunaan data & keamanan', () => toast(context, 'Segera hadir')),
+              ]),
+
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: Colors.orange.shade50,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, color: Colors.deepOrange, size: 16),
+main
             ),
             const SizedBox(height: 8),
             Text(

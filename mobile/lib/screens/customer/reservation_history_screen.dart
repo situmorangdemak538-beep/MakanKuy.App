@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/utils/format.dart';
 import '../../core/widgets/common.dart';
 import '../../data/models/reservation.dart';
 import '../../providers/reservation_provider.dart';
-
+ 
 class ReservationHistoryScreen extends StatefulWidget {
   const ReservationHistoryScreen({super.key});
   @override
   State<ReservationHistoryScreen> createState() => _ReservationHistoryScreenState();
 }
-
+ 
 class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
   bool _active = true;
-
+ 
   Widget _tab(String label, int count, bool sel, VoidCallback onTap) => Expanded(
         child: GestureDetector(
           onTap: onTap,
@@ -41,7 +40,7 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
           ),
         ),
       );
-
+ 
   Widget _step(String title, String sub, int state, {bool last = false}) {
     // state: 0 = selesai, 1 = sedang berjalan, 2 = belum
     final color = state == 0 ? AppColors.green : (state == 1 ? AppColors.primaryDark : AppColors.border);
@@ -69,7 +68,7 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
       ),
     ]);
   }
-
+ 
   (String, Color, Color, IconData) _status(ReservationStatus s) {
     switch (s) {
       case ReservationStatus.pending:
@@ -82,7 +81,7 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
         return ('Dibatalkan', AppColors.redSoft, AppColors.red, Icons.cancel_rounded);
     }
   }
-
+ 
   Widget _card(BuildContext context, Reservation r) {
     final st = _status(r.status);
     final p = context.read<ReservationProvider>();
@@ -145,7 +144,7 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text('Jadwal Makan', style: ts(10, c: AppColors.muted)),
-                    Text(dateLabel(r.date), style: ts(12, w: FontWeight.w800)),
+                    Text(r.dateText, style: ts(12, w: FontWeight.w800)),
                     Text('${r.time} WIT', style: ts(11, w: FontWeight.w800, c: AppColors.primaryDark)),
                   ]),
                 ),
@@ -242,7 +241,7 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
       ]),
     );
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     final rp = context.watch<ReservationProvider>();
