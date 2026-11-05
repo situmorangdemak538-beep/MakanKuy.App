@@ -1,7 +1,7 @@
-/// Disiapkan untuk tahap integrasi dengan Laravel REST API.
-/// Saat ini aplikasi memakai data dummy (lib/data/dummy_data.dart).
+
+/// Konfigurasi alamat Laravel REST API.
 class ApiConfig {
-  static const baseUrl = 'https://api.makankuy.example/api'; // GANTI nanti
+  static const baseUrl = 'http://127.0.0.1:8000/api';
 
   // Authentication
   static const register = '/register';
@@ -20,6 +20,16 @@ class ApiConfig {
   static const reservations = '/reservations';
   static String reservationStatus(String id) => '/reservations/$id/status';
 
-  // Dashboard
+  // Dashboard Admin Restoran
   static const adminDashboard = '/admin/dashboard';
+
+  // Dashboard Administrator
+  static const administratorDashboard = '/administrator/dashboard';
+
+  // Persetujuan restoran oleh Administrator
+  static String approveRestaurant(String id) =>
+      '/restaurants/$id/approve';
+
+  static String rejectRestaurant(String id) =>
+      '/restaurants/$id/reject';
 }

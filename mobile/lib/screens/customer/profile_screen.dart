@@ -17,6 +17,17 @@ class ProfileScreen extends StatefulWidget {
  
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _reminder = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+
+      await context.read<AuthProvider>().fetchProfile();
+    });
+  }
  
   Widget _stat(IconData i, Color bg, String v, String l) => Expanded(
         child: Container(
@@ -70,35 +81,108 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
- 
-  void _edit(BuildContext context) {
-    final auth = context.read<AuthProvider>();
-    final name = TextEditingController(text: auth.user?.name);
-    final phone = TextEditingController(text: auth.user?.phone);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.fromLTRB(20, 20, 20, MediaQuery.of(ctx).viewInsets.bottom + 20),
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Edit Profil', style: ts(18, w: FontWeight.w800)),
-          gap(14),
-          TextField(controller: name, decoration: const InputDecoration(hintText: 'Nama lengkap')),
-          gap(10),
-          TextField(controller: phone, keyboardType: TextInputType.phone, decoration: const InputDecoration(hintText: 'Nomor WhatsApp')),
-          gap(16),
-          PrimaryButton(
-              label: 'Simpan',
-              onPressed: () {
-                auth.updateProfile(name.text.trim(), phone.text.trim());
-                Navigator.pop(ctx);
-              }),
-        ]),
-      ),
-    );
-  }
+ // demak ubah
+void _edit(BuildContext context) {
+  final auth = context.read<AuthProvider>();
+  final name = TextEditingController(text: auth.user?.name ?? '');
+  final phone = TextEditingController(text: auth.user?.phone ?? '');
+
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+    ),
+    builder: (ctx) {
+      bool saving = false;
+
+      return StatefulBuilder(
+        builder: (ctx, setModalState) {
+          return Padding(
+            padding: EdgeInsets.fromLTRB(
+              20,
+              20,
+              20,
+              MediaQuery.of(ctx).viewInsets.bottom + 20,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Edit Profil', style: ts(18, w: FontWeight.w800)),
+                gap(14),
+                TextField(
+                  controller: name,
+                  decoration: const InputDecoration(
+                    hintText: 'Nama lengkap',
+                  ),
+                ),
+                gap(10),
+                TextField(
+                  controller: phone,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    hintText: 'Nomor WhatsApp',
+                  ),
+                ),
+                gap(16),
+                PrimaryButton(
+                  label: saving ? 'Menyimpan...' : 'Simpan',
+                  onPressed: () async {
+                    if (saving) return;
+
+                    if (name.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Nama tidak boleh kosong.'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    setModalState(() => saving = true);
+
+                    final success = await auth.updateProfile(
+                      name.text.trim(),
+                      phone.text.trim(),
+                    );
+
+                    if (!ctx.mounted) return;
+
+                    if (success) {
+                      Navigator.pop(ctx);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Profil berhasil diperbarui.'),
+                        ),
+                      );
+                    } else {
+                      setModalState(() => saving = false);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            auth.errorMessage ??
+                                'Gagal memperbarui profil.',
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  ).whenComplete(() {
+    name.dispose();
+    phone.dispose();
+  });
+}
+
  
   @override
   Widget build(BuildContext context) {

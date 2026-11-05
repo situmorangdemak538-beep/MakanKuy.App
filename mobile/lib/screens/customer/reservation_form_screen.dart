@@ -119,58 +119,105 @@ class ReservationFormScreen extends StatelessWidget {
         ]),
       );
  
+  // demak ganti
   Future<void> _submit(BuildContext context) async {
-    final p = context.read<ReservationProvider>();
-    final auth = context.read<AuthProvider>();
-    final nav = context.read<NavProvider>();
-    if (p.time == null) {
-      toast(context, 'Pilih jam kedatangan terlebih dahulu');
-      return;
-    }
-    final av = context.read<AvailabilityProvider>();
-    final start = p.date;
-    final end = p.endDate ?? p.date;
-    final exclusive = p.exclusive;
-    if (!av.rangeFree(restaurant.id, start, end)) {
-      toast(context, 'Tanggal yang dipilih penuh atau sudah dipesan klien lain');
-      return;
-    }
-final voucher = context.read<PromoProvider>().applied;
-final discount = (voucher != null &&
-        (voucher.restaurantId == null || voucher.restaurantId == restaurant.id))
-    ? voucher.percent
-    : 0;
-final res = p.submit(restaurant,
+  final p = context.read<ReservationProvider>();
+  final auth = context.read<AuthProvider>();
+  final nav = context.read<NavProvider>();
+
+  if (p.time == null) {
+    toast(context, 'Pilih jam kedatangan terlebih dahulu');
+    return;
+  }
+
+  if (auth.token == null || auth.token!.isEmpty) {
+    toast(context, 'Silakan login terlebih dahulu');
+    return;
+  }
+
+  final av = context.read<AvailabilityProvider>();
+  final start = p.date;
+  final end = p.endDate ?? p.date;
+  final exclusive = p.exclusive;
+
+  if (!av.rangeFree(restaurant.id, start, end)) {
+    toast(context, 'Tanggal yang dipilih penuh atau sudah dipesan klien lain');
+    return;
+  }
+
+  final voucher = context.read<PromoProvider>().applied;
+  final discount = (voucher != null &&
+          (voucher.restaurantId == null ||
+              voucher.restaurantId == restaurant.id))
+      ? voucher.percent
+      : 0;
+
+  final res = await p.submit(
+    auth,
+    restaurant,
     name: auth.user?.name ?? 'Pelanggan',
     phone: auth.user?.phone ?? '',
-    discountPercent: discount);
-    if (exclusive) {
-      // Booking seluruh tempat -> kunci periode agar klien lain tidak bisa memilihnya.
-      av.lock(restaurant.id, start, end, res.code, reason: 'Dipesan klien lain');
-    }
-    await showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Row(children: [
+    discountPercent: discount,
+  );
+
+  if (!context.mounted) return;
+
+  if (res == null) {
+    toast(context, p.errorMessage ?? 'Reservasi gagal dibuat');
+    return;
+  }
+
+  if (exclusive) {
+    av.lock(
+      restaurant.id,
+      start,
+      end,
+      res.code,
+      reason: 'Dipesan klien lain',
+    );
+  }
+
+  await showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      title: Row(
+        children: [
           const Icon(Icons.check_circle_rounded, color: AppColors.green),
           gapW(8),
           const Expanded(child: Text('Reservasi Dikirim')),
-        ]),
-        content: Text(
-            'Kode ${res.code}\n${restaurant.name}\n${dateLabel(res.date)} • ${res.time} WIT • ${res.guests} orang\n\nStatus: Pending, menunggu persetujuan resto.'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('Lihat Riwayat',
-                  style: ts(14, w: FontWeight.w800, c: AppColors.primaryDark))),
         ],
       ),
-    );
-    if (!context.mounted) return;
-    Navigator.of(context).popUntil((r) => r.isFirst);
-    nav.go(2);
-  }
+      content: Text(
+        'Kode ${res.code}\n'
+        '${restaurant.name}\n'
+        '${dateLabel(res.date)} • ${res.time} WIT • '
+        '${res.guests} orang\n\n'
+        'Status: Pending, menunggu persetujuan resto.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: Text(
+            'Lihat Riwayat',
+            style: ts(
+              14,
+              w: FontWeight.w800,
+              c: AppColors.primaryDark,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  if (!context.mounted) return;
+
+  Navigator.of(context).popUntil((r) => r.isFirst);
+  nav.go(2);
+}
  
   @override
   Widget build(BuildContext context) {

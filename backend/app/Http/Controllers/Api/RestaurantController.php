@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class RestaurantController extends Controller
 {
+    // Menampilkan daftar restoran.
     public function index(Request $request)
     {
         $query = Restaurant::query();
@@ -32,6 +33,7 @@ class RestaurantController extends Controller
         ]);
     }
 
+    // Menampilkan detail restoran.
     public function show($id)
     {
         $restaurant = Restaurant::find($id);
@@ -48,15 +50,28 @@ class RestaurantController extends Controller
         ]);
     }
 
+    // Admin Restoran membuat restorannya sendiri.
     public function store(Request $request)
     {
-        $request->validate([
+        $user = $request->user();
+
+        // Memastikan satu admin hanya memiliki satu restoran.
+        if ($user->restaurant()->exists()) {
+            return response()->json([
+                'message' => 'Akun Anda sudah memiliki restoran.',
+            ], 422);
+        }
+
+        $validated = $request->validate([
             'nama' => 'required|string|max:255',
-            'alamat' => 'nullable|string',
-            'kategori' => 'nullable|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'kategori' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'foto' => 'nullable|string',
-            'jam_buka' => 'nullable',
+            'gambar' => 'nullable|string',
+            'rating' => 'nullable|numeric',
+            'harga_rata_rata' => 'nullable|integer',
+            'jam_buka' => 'required',
             'jam_tutup' => 'nullable',
             'harga_min' => 'nullable|integer',
             'harga_max' => 'nullable|integer',
@@ -64,25 +79,48 @@ class RestaurantController extends Controller
             'longitude' => 'nullable|numeric',
         ]);
 
-        $restaurant = Restaurant::create($request->all());
+        $validated['user_id'] = $user->id;
+        $validated['status'] = 'pending';
+
+        $restaurant = Restaurant::create($validated);
 
         return response()->json([
-            'message' => 'Restaurant berhasil ditambahkan',
+            'message' => 'Restaurant berhasil didaftarkan dan menunggu persetujuan administrator.',
             'data' => $restaurant,
         ], 201);
     }
 
+    // Admin hanya dapat mengubah restoran miliknya.
     public function update(Request $request, $id)
     {
-        $restaurant = Restaurant::find($id);
+        $restaurant = Restaurant::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
 
         if (!$restaurant) {
             return response()->json([
-                'message' => 'Restaurant tidak ditemukan',
+                'message' => 'Restaurant tidak ditemukan atau bukan milik Anda.',
             ], 404);
         }
 
-        $restaurant->update($request->all());
+        $validated = $request->validate([
+            'nama' => 'sometimes|required|string|max:255',
+            'alamat' => 'sometimes|required|string|max:255',
+            'kategori' => 'sometimes|required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'foto' => 'nullable|string',
+            'gambar' => 'nullable|string',
+            'rating' => 'nullable|numeric',
+            'harga_rata_rata' => 'nullable|integer',
+            'jam_buka' => 'sometimes|required',
+            'jam_tutup' => 'nullable',
+            'harga_min' => 'nullable|integer',
+            'harga_max' => 'nullable|integer',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+        ]);
+
+        $restaurant->update($validated);
 
         return response()->json([
             'message' => 'Restaurant berhasil diperbarui',
@@ -90,13 +128,16 @@ class RestaurantController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    // Admin hanya dapat menghapus restoran miliknya.
+    public function destroy(Request $request, $id)
     {
-        $restaurant = Restaurant::find($id);
+        $restaurant = Restaurant::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
 
         if (!$restaurant) {
             return response()->json([
-                'message' => 'Restaurant tidak ditemukan',
+                'message' => 'Restaurant tidak ditemukan atau bukan milik Anda.',
             ], 404);
         }
 
@@ -107,6 +148,7 @@ class RestaurantController extends Controller
         ]);
     }
 
+    // Administrator menyetujui restoran.
     public function approve($id)
     {
         $restaurant = Restaurant::find($id);
@@ -127,6 +169,7 @@ class RestaurantController extends Controller
         ]);
     }
 
+    // Administrator menolak restoran.
     public function reject($id)
     {
         $restaurant = Restaurant::find($id);

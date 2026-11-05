@@ -66,19 +66,46 @@ class _RegisterRestaurantScreenState extends State<RegisterRestaurantScreen> {
       } else {
         _close = t;
       }
-    });
+    }
+    );
   }
- 
-  void _submit() {
+    Future<void> _submit() async {
     if (!_form.currentState!.validate()) return;
-    if (_cat == null) return toast(context, 'Pilih kategori masakan');
-    if (_days.isEmpty) return toast(context, 'Pilih minimal satu hari buka');
-    if (!_agree) return toast(context, 'Setujui Syarat Mitra terlebih dahulu');
- 
+
+    if (_cat == null) {
+      return toast(context, 'Pilih kategori masakan');
+    }
+
+    if (_days.isEmpty) {
+      return toast(context, 'Pilih minimal satu hari buka');
+    }
+
+    if (!_agree) {
+      return toast(context, 'Setujui Syarat Mitra terlebih dahulu');
+    }
+
     final auth = context.read<AuthProvider>();
-    final isAdministrator = auth.user?.role == AppRole.administrator;
-    final r = Restaurant(
-      id: 'r${DateTime.now().millisecondsSinceEpoch}',
+
+    // Endpoint pendaftaran hanya tersedia untuk Admin Restoran.
+    if (auth.user?.role != AppRole.admin) {
+      return toast(
+        context,
+        'Silakan login menggunakan akun Admin Restoran.',
+      );
+    }
+
+    final priceFrom = int.tryParse(_pf.text.trim()) ?? 0;
+    final priceTo = int.tryParse(_pt.text.trim()) ?? priceFrom;
+
+    if (priceTo < priceFrom) {
+      return toast(
+        context,
+        'Harga sampai tidak boleh lebih kecil dari harga mulai.',
+      );
+    }
+
+    final restaurant = Restaurant(
+      id: '',
       name: _name.text.trim(),
       category: _cat!,
       area: _area,
@@ -87,10 +114,12 @@ class _RegisterRestaurantScreenState extends State<RegisterRestaurantScreen> {
       distanceKm: 1.5,
       rating: 0,
       reviews: 0,
-      priceFrom: int.tryParse(_pf.text.trim()) ?? 0,
-      priceTo: int.tryParse(_pt.text.trim()),
+      priceFrom: priceFrom,
+      priceTo: priceTo,
       tablesFree: _tables,
-      specialty: _desc.text.trim().isEmpty ? _cat! : _desc.text.trim(),
+      specialty: _desc.text.trim().isEmpty
+          ? _cat!
+          : _desc.text.trim(),
       badge: 'Mitra Baru',
       tags: _fac.take(2).toList(),
       hours: '${_fmt(_open)} - ${_fmt(_close)} WIT',
@@ -103,29 +132,51 @@ class _RegisterRestaurantScreenState extends State<RegisterRestaurantScreen> {
       facilities: [..._fac, ..._type],
       ownerName: auth.user?.name ?? '',
       description: _desc.text.trim(),
-      status: isAdministrator ? RestaurantStatus.approved : RestaurantStatus.pending,
+      status: RestaurantStatus.pending,
     );
-    // Backend: POST /api/restaurants
-    context.read<RestaurantProvider>().addRestaurant(r);
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text('Warung Terdaftar'),
-        content: Text(isAdministrator
-            ? '${r.name} langsung aktif dan tampil di aplikasi.'
-            : '${r.name} berhasil dikirim. Warung akan tampil setelah disetujui Administrator.'),
-        actions: [
-          TextButton(
+
+    try {
+      // Kirim dan simpan data ke database Laravel.
+      await context.read<RestaurantProvider>().registerRestaurant(
+        auth,
+        restaurant,
+      );
+
+      if (!mounted) return;
+
+      await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          title: const Text('Pendaftaran Berhasil'),
+          content: Text(
+            '${restaurant.name} berhasil disimpan ke server. '
+            'Warung sedang menunggu persetujuan Administrator.',
+          ),
+          actions: [
+            TextButton(
               onPressed: () {
                 Navigator.pop(ctx);
-                Navigator.pop(context);
               },
-              child: const Text('OK')),
-        ],
-      ),
-    );
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+
+      if (!mounted) return;
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      final message = e.toString().replaceFirst('Exception: ', '');
+
+      toast(context, message);
+    }
   }
+
  
   Widget _sec(IconData i, String t) => Padding(
         padding: const EdgeInsets.only(top: 22, bottom: 10),

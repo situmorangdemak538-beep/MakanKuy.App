@@ -11,19 +11,25 @@ import '../screens/splash_screen.dart';
 
 void goHome(BuildContext context, AppRole role) {
   context.read<NavProvider>().go(0);
+
   final Widget page = switch (role) {
     AppRole.admin => const AdminShell(),
     AppRole.administrator => const AdministratorShell(),
     AppRole.customer => const CustomerShell(),
   };
+
   Navigator.of(context).pushAndRemoveUntil(
     MaterialPageRoute(builder: (_) => page),
     (_) => false,
   );
 }
 
-void logoutToSplash(BuildContext context) {
-  context.read<AuthProvider>().logout();
+// Logout melalui Laravel, kemudian kembali ke Splash Screen.
+Future<void> logoutToSplash(BuildContext context) async {
+  await context.read<AuthProvider>().logout();
+
+  if (!context.mounted) return;
+
   Navigator.of(context).pushAndRemoveUntil(
     MaterialPageRoute(builder: (_) => const SplashScreen()),
     (_) => false,

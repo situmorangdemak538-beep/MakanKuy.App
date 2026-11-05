@@ -20,8 +20,15 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [PasswordController::class, 'forgotPassword']);
 Route::post('/reset-password', [PasswordController::class, 'resetPassword']);
 
+// Restaurant
 Route::get('/restaurants', [RestaurantController::class, 'index']);
 Route::get('/restaurants/{id}', [RestaurantController::class, 'show']);
+
+// Menu: melihat menu tidak perlu login
+Route::get('/restaurants/{restaurant_id}/menus', [MenuController::class, 'index']);
+
+// Review: melihat ulasan tidak perlu login
+Route::get('/restaurants/{restaurant_id}/reviews', [ReviewController::class, 'index']);
 
 
 // ==================== LOGIN ====================
@@ -32,25 +39,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
 
+    // Memperbarui profil pengguna
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
 
     // ==================== CUSTOMER ====================
 
     Route::post('/reservations', [ReservationController::class, 'store']);
-
     Route::delete('/reservations/{id}', [ReservationController::class, 'destroy']);
 
     Route::post('/reviews', [ReviewController::class, 'store']);
-
 
     // ==================== RESERVATION ====================
 
     Route::get('/reservations', [ReservationController::class, 'index']);
     Route::get('/reservations/{id}', [ReservationController::class, 'show']);
 
-
     // ==================== ADMIN RESTORAN ====================
 
-    Route::middleware('role:admin')->group(function () {
+    Route::middleware('role:admin_resto')->group(function () {
 
         // Dashboard
         Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
@@ -60,7 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/restaurants/{id}', [RestaurantController::class, 'update']);
         Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy']);
 
-        // Menu
+        // Menu: perubahan data hanya untuk admin
         Route::post('/menus', [MenuController::class, 'store']);
         Route::put('/menus/{id}', [MenuController::class, 'update']);
         Route::delete('/menus/{id}', [MenuController::class, 'destroy']);
@@ -68,7 +74,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // Reservation
         Route::put('/reservations/{id}/status', [ReservationController::class, 'updateStatus']);
     });
-
 
     // ==================== ADMINISTRATOR ====================
 
@@ -92,16 +97,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/users/{id}', [UserController::class, 'destroy']);
     });
 
-
-    // ==================== MENU ====================
-
-    Route::get('/restaurants/{restaurant_id}/menus', [MenuController::class, 'index']);
-
-    // ==================== REVIEW ====================
-
-    Route::get('/restaurants/{restaurant_id}/reviews', [ReviewController::class, 'index']);
-
-    // ==================== CATEGORY ====================
-
+    // Category
     Route::get('/categories', [CategoryController::class, 'index']);
 });

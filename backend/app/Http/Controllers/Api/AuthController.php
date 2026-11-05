@@ -5,24 +5,31 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
-    // Register
+    // Registrasi akun baru.
+    // Role yang boleh didaftarkan hanya customer dan admin_resto.
+    // Administrator tidak boleh dibuat melalui registrasi umum.
     public function register(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+            'password' => 'required|string|min:6',
+            'role' => [
+                'required',
+                Rule::in(['customer', 'admin_resto']),
+            ],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'role' => $validated['role'],
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -34,21 +41,36 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // Login
+    // Login: memeriksa email, password, dan role.
     public function login(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|string',
+            'role' => [
+                'required',
+                Rule::in(['customer', 'admin_resto', 'administrator']),
+            ],
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        if (!Auth::attempt([
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+        ])) {
             return response()->json([
-                'message' => 'Email atau password salah',
+                'message' => 'Email atau password salah.',
             ], 401);
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $validated['email'])->first();
+
+        if ($user->role !== $validated['role']) {
+            Auth::logout();
+
+            return response()->json([
+                'message' => 'Role yang dipilih tidak sesuai dengan akun.',
+            ], 403);
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -59,21 +81,45 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // Logout
+    // Logout.
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $token = $request->user()->currentAccessToken();
+
+        if ($token) {
+            $token->delete();
+        }
 
         return response()->json([
             'message' => 'Logout berhasil',
         ]);
     }
 
-    // Profile
+    // Mengambil profil pengguna.
     public function profile(Request $request)
     {
         return response()->json([
             'user' => $request->user(),
         ]);
+    }
+
+    // Memperbarui nama dan nomor telepon.
+    public function updateProfile(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $user = $request->user();
+
+        $user->name = $validated['name'];
+        $user->phone = $validated['phone'] ?? null;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Profil berhasil diperbarui.',
+            'user' => $user,
+        ], 200);
     }
 }

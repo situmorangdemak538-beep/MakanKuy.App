@@ -21,6 +21,12 @@ class AdministratorController extends Controller
         $restoranApproved = Restaurant::where('status', 'approved')->count();
         $restoranRejected = Restaurant::where('status', 'rejected')->count();
 
+        // Mengambil daftar restoran yang menunggu persetujuan.
+        $daftarRestoranPending = Restaurant::with('user:id,name,email')
+            ->where('status', 'pending')
+            ->latest()
+            ->get();
+
         return response()->json([
             'message' => 'Dashboard administrator berhasil diambil',
             'data' => [
@@ -28,11 +34,14 @@ class AdministratorController extends Controller
                 'total_restoran' => $totalRestoran,
                 'total_kategori' => $totalKategori,
                 'total_reservasi' => $totalReservasi,
+
                 'restoran' => [
                     'pending' => $restoranPending,
                     'approved' => $restoranApproved,
                     'rejected' => $restoranRejected,
                 ],
+
+                'daftar_restoran_pending' => $daftarRestoranPending,
             ],
         ]);
     }

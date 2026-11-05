@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/widgets/common.dart';
@@ -10,10 +12,31 @@ import '../../providers/restaurant_provider.dart';
 import '../partner/register_restaurant_screen.dart';
 import 'reservation_form_screen.dart';
 import 'restaurant_detail_screen.dart';
- 
-class HomeScreen extends StatelessWidget {
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
- 
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      final rp = context.read<RestaurantProvider>();
+
+      if (rp.apiRestaurants.isEmpty &&
+          !rp.isLoadingRestaurants) {
+        rp.testRestaurantApi();
+      }
+    });
+  }
+
   Widget _popularCard(BuildContext context, Restaurant r) {
     return GestureDetector(
       onTap: () => openRestaurant(context, r),
@@ -22,68 +45,107 @@ class HomeScreen extends StatelessWidget {
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.all(8),
         decoration: box(color: AppColors.surface, r: 24),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Stack(children: [
-            FoodImage(
-                path: r.image,
-                height: 150,
-                width: double.infinity,
-                radius: 18),
-            Positioned(
-                left: 8,
-                top: 8,
-                child: Pill(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                FoodImage(
+                  path: r.image,
+                  height: 150,
+                  width: double.infinity,
+                  radius: 18,
+                ),
+                Positioned(
+                  left: 8,
+                  top: 8,
+                  child: Pill(
                     text: '${r.rating} (${r.reviews})',
                     bg: Colors.white.withAlpha(230),
                     icon: Icons.star_rounded,
-                    fg: AppColors.ink)),
-            Positioned(
-                right: 8,
-                top: 8,
-                child: Pill(
+                    fg: AppColors.ink,
+                  ),
+                ),
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Pill(
                     text: '${r.tablesFree} Meja Kosong',
                     bg: AppColors.green,
-                    fg: Colors.white)),
-          ]),
-          gap(8),
-          Text(r.name,
+                    fg: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            gap(8),
+            Text(
+              r.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: ts(15, w: FontWeight.w800)),
-          gap(2),
-          Row(children: [
-            const Icon(Icons.navigation_outlined, size: 14, color: AppColors.muted),
-            gapW(4),
-            Expanded(
-                child: Text('${r.distanceKm} km • ${r.address}',
+              style: ts(15, w: FontWeight.w800),
+            ),
+            gap(2),
+            Row(
+              children: [
+                const Icon(
+                  Icons.navigation_outlined,
+                  size: 14,
+                  color: AppColors.muted,
+                ),
+                gapW(4),
+                Expanded(
+                  child: Text(
+                    '${r.distanceKm} km • ${r.address}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: ts(12, c: AppColors.muted))),
-          ]),
-          const Spacer(),
-          Row(children: [
-            Expanded(
-                child: Text('${rk(r.priceFrom)} - ${rk(r.priceTo).substring(3)}',
-                    style: ts(13, w: FontWeight.w800, c: AppColors.primaryDark))),
-            SizedBox(
-              height: 32,
-              child: ElevatedButton(
-                onPressed: () => openReservation(context, r),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryDark,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    shape: const StadiumBorder()),
-                child: Text('Pesan',
-                    style: ts(12, w: FontWeight.w800, c: Colors.white)),
-              ),
+                    style: ts(12, c: AppColors.muted),
+                  ),
+                ),
+              ],
             ),
-          ]),
-        ]),
+            const Spacer(),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${rk(r.priceFrom)} - ${rk(r.priceTo).substring(3)}',
+                    style: ts(
+                      13,
+                      w: FontWeight.w800,
+                      c: AppColors.primaryDark,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 32,
+                  child: ElevatedButton(
+                    onPressed: () => openReservation(context, r),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryDark,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                      ),
+                      shape: const StadiumBorder(),
+                    ),
+                    child: Text(
+                      'Pesan',
+                      style: ts(
+                        12,
+                        w: FontWeight.w800,
+                        c: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
- 
+
   Widget _nearbyTile(BuildContext context, Restaurant r) {
     return GestureDetector(
       onTap: () => openRestaurant(context, r),
@@ -91,227 +153,448 @@ class HomeScreen extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(10),
         decoration: box(color: AppColors.surface, r: 22),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Stack(children: [
-            FoodImage(path: r.image, width: 100, height: 118, radius: 16),
-            Positioned(
-                left: 6,
-                bottom: 6,
-                child: Pill(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                FoodImage(
+                  path: r.image,
+                  width: 100,
+                  height: 118,
+                  radius: 16,
+                ),
+                Positioned(
+                  left: 6,
+                  bottom: 6,
+                  child: Pill(
                     text: r.distanceLabel,
                     bg: Colors.black.withAlpha(150),
                     fg: Colors.white,
-                    fontSize: 10)),
-          ]),
-          gapW(12),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Expanded(
-                    child: Text(r.category,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: ts(11, w: FontWeight.w800, c: AppColors.primaryDark))),
-                const Icon(Icons.star_rounded, size: 15, color: AppColors.amber),
-                Text('${r.rating}', style: ts(12, w: FontWeight.w800)),
-              ]),
-              gap(2),
-              Text(r.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: ts(15, w: FontWeight.w800, h: 1.25)),
-              gap(2),
-              Text(r.specialty,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: ts(12, c: AppColors.muted)),
-              gap(8),
-              Row(children: [
-                Flexible(
-                    child: Pill(
-                        text: r.tags.isNotEmpty && r.tags.first.contains('Lesehan')
-                            ? r.tags.first
-                            : 'Sedia ${r.tablesFree} Meja',
-                        bg: AppColors.greenSoft,
-                        fg: AppColors.green)),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () => openReservation(context, r),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    decoration: box(color: AppColors.peach, r: 20),
-                    child: Text('Reservasi',
-                        style: ts(12, w: FontWeight.w800, c: AppColors.primaryDark)),
+                    fontSize: 10,
                   ),
                 ),
-              ]),
-            ]),
-          ),
-        ]),
+              ],
+            ),
+            gapW(12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          r.category,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: ts(
+                            11,
+                            w: FontWeight.w800,
+                            c: AppColors.primaryDark,
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        Icons.star_rounded,
+                        size: 15,
+                        color: AppColors.amber,
+                      ),
+                      Text(
+                        '${r.rating}',
+                        style: ts(12, w: FontWeight.w800),
+                      ),
+                    ],
+                  ),
+                  gap(2),
+                  Text(
+                    r.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: ts(15, w: FontWeight.w800, h: 1.25),
+                  ),
+                  gap(2),
+                  Text(
+                    r.specialty,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: ts(12, c: AppColors.muted),
+                  ),
+                  gap(8),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Pill(
+                          text: r.tags.isNotEmpty &&
+                                  r.tags.first.contains('Lesehan')
+                              ? r.tags.first
+                              : 'Sedia ${r.tablesFree} Meja',
+                          bg: AppColors.greenSoft,
+                          fg: AppColors.green,
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () => openReservation(context, r),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          decoration: box(
+                            color: AppColors.peach,
+                            r: 20,
+                          ),
+                          child: Text(
+                            'Reservasi',
+                            style: ts(
+                              12,
+                              w: FontWeight.w800,
+                              c: AppColors.primaryDark,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
- 
+
   @override
   Widget build(BuildContext context) {
     final rp = context.watch<RestaurantProvider>();
     final nav = context.read<NavProvider>();
- 
+
+    void testApi() {
+      rp.testRestaurantApi();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Sedang mengambil data restoran dari Laravel...',
+          ),
+        ),
+      );
+    }
+
     void searchFor(String q) {
       context.read<RestaurantProvider>()
         ..setQuery(q)
         ..setArea(null);
+
       nav.go(1);
     }
- 
+
     return Scaffold(
-      body: Column(children: [
-        const BrandHeader(title: 'MakanKuy', subtitle: 'Beranda • Ternate'),
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-            children: [
-              Row(children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: const BoxDecoration(
-                      color: AppColors.peach, shape: BoxShape.circle),
-                  child: const Icon(Icons.location_on_outlined,
-                      color: AppColors.primaryDark),
+      body: Column(
+        children: [
+          const BrandHeader(
+            title: 'MakanKuy',
+            subtitle: 'Beranda • Ternate',
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed:
+                    rp.isLoadingRestaurants ? null : testApi,
+                icon: rp.isLoadingRestaurants
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(Icons.wifi),
+                label: Text(
+                  rp.isLoadingRestaurants
+                      ? 'MENGAMBIL DATA RESTORAN...'
+                      : 'TES KONEKSI API RESTORAN',
                 ),
-                gapW(10),
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      Text('Ternate, Maluku Utara',
-                          style: ts(14, w: FontWeight.w800)),
-                      const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
-                    ]),
-                    Text('Area Gamalama & Sekitarnya',
-                        style: ts(11, c: AppColors.muted)),
-                  ]),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: box(color: AppColors.surface, r: 20),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.circle, size: 8, color: AppColors.green),
-                    gapW(6),
-                    Text('Buka Hari Ini', style: ts(11, w: FontWeight.w700)),
-                  ]),
-                ),
-              ]),
-              gap(14),
-              GestureDetector(
-                onTap: () => nav.go(1),
-                child: Container(
-                  height: 54,
-                  padding: const EdgeInsets.only(left: 16, right: 6),
-                  decoration: box(color: AppColors.surface, r: 28),
-                  child: Row(children: [
-                    const Icon(Icons.search_rounded, color: AppColors.muted),
+              ),
+            ),
+          ),
+
+          if (rp.restaurantApiError != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: Text(
+                'Gagal mengambil data API: '
+                '${rp.restaurantApiError}',
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(
+                16, 4, 16, 24,
+              ),
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: const BoxDecoration(
+                        color: AppColors.peach,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.location_on_outlined,
+                        color: AppColors.primaryDark,
+                      ),
+                    ),
                     gapW(10),
                     Expanded(
-                        child: Text('Cari Gohu Ikan, Ikan Fufu, cafe santai...',
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Ternate, Maluku Utara',
+                                style: ts(14, w: FontWeight.w800),
+                              ),
+                              const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 18,
+                              ),
+                            ],
+                          ),
+                          Text(
+                            'Area Gamalama & Sekitarnya',
+                            style: ts(11, c: AppColors.muted),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: box(
+                        color: AppColors.surface,
+                        r: 20,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.circle,
+                            size: 8,
+                            color: AppColors.green,
+                          ),
+                          gapW(6),
+                          Text(
+                            'Buka Hari Ini',
+                            style: ts(11, w: FontWeight.w700),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                gap(14),
+                GestureDetector(
+                  onTap: () => nav.go(1),
+                  child: Container(
+                    height: 54,
+                    padding: const EdgeInsets.only(
+                      left: 16, right: 6,
+                    ),
+                    decoration: box(
+                      color: AppColors.surface,
+                      r: 28,
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.search_rounded,
+                          color: AppColors.muted,
+                        ),
+                        gapW(10),
+                        Expanded(
+                          child: Text(
+                            'Cari Gohu Ikan, Ikan Fufu, cafe santai...',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: ts(14, c: AppColors.muted))),
-                    Container(
-                      width: 42,
-                      height: 42,
-                      decoration: const BoxDecoration(
-                          color: AppColors.primaryDark, shape: BoxShape.circle),
-                      child: const Icon(Icons.tune_rounded, color: Colors.white),
+                            style: ts(14, c: AppColors.muted),
+                          ),
+                        ),
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: const BoxDecoration(
+                            color: AppColors.primaryDark,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.tune_rounded,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                  ]),
+                  ),
                 ),
-              ),
-              gap(12),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(children: [
-                  const FilterPill(label: 'Semua', selected: true),
-                  gapW(8),
-                  FilterPill(
-                      label: 'Gohu Ikan',
-                      icon: Icons.set_meal_rounded,
-                      onTap: () => searchFor('Gohu Ikan')),
-                  gapW(8),
-                  FilterPill(
-                      label: 'Ikan Fufu',
-                      icon: Icons.dinner_dining_rounded,
-                      onTap: () => searchFor('Fufu')),
-                  gapW(8),
-                  FilterPill(
-                      label: 'Cafe & Kopi',
-                      icon: Icons.local_cafe_rounded,
-                      onTap: () => searchFor('Cafe')),
-                ]),
-              ),
-              gap(16),
-              const PromoBanner(),
-              gap(22),
-              SectionTitle(
-                  title: 'Restoran UMKM Populer',
-                  subtitle: 'Pilihan favorit masyarakat Gamalama & sekitarnya',
-                  action: 'Semua ›',
-                  onAction: () => nav.go(1)),
-              gap(12),
-              SizedBox(
-                height: 275,
-                child: ListView(
+                gap(12),
+                SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  children:
-                      rp.popular.map((r) => _popularCard(context, r)).toList(),
+                  child: Row(
+                    children: [
+                      const FilterPill(
+                        label: 'Semua',
+                        selected: true,
+                      ),
+                      gapW(8),
+                      FilterPill(
+                        label: 'Gohu Ikan',
+                        icon: Icons.set_meal_rounded,
+                        onTap: () => searchFor('Gohu Ikan'),
+                      ),
+                      gapW(8),
+                      FilterPill(
+                        label: 'Ikan Fufu',
+                        icon: Icons.dinner_dining_rounded,
+                        onTap: () => searchFor('Fufu'),
+                      ),
+                      gapW(8),
+                      FilterPill(
+                        label: 'Cafe & Kopi',
+                        icon: Icons.local_cafe_rounded,
+                        onTap: () => searchFor('Cafe'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              gap(18),
-              const SectionTitle(
+                gap(16),
+                const PromoBanner(),
+                gap(22),
+
+                if (rp.isLoadingRestaurants &&
+                    rp.apiRestaurants.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+
+                if (rp.apiRestaurants.isNotEmpty) ...[
+                  SectionTitle(
+                    title: 'Restoran dari Database Laravel',
+                    subtitle:
+                        '${rp.apiRestaurants.length} restoran berhasil dimuat dari API',
+                  ),
+                  gap(12),
+                  ...rp.apiRestaurants.map(
+                    (r) => _nearbyTile(context, r),
+                  ),
+                  gap(18),
+                ],
+
+                SectionTitle(
+                  title: 'Restoran UMKM Populer',
+                  subtitle:
+                      'Pilihan favorit masyarakat Gamalama & sekitarnya',
+                  action: 'Semua ›',
+                  onAction: () => nav.go(1),
+                ),
+                gap(12),
+                SizedBox(
+                  height: 275,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: rp.popular
+                        .map((r) => _popularCard(context, r))
+                        .toList(),
+                  ),
+                ),
+                gap(18),
+                const SectionTitle(
                   title: 'Rekomendasi Dekat Kamu',
-                  subtitle: 'Jarak jalan kaki dari lokasimu sekarang',
-                  trailingIcon: Icons.explore_outlined),
-              gap(12),
-              ...rp.nearby.map((r) => _nearbyTile(context, r)),
-              gap(6),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: box(color: AppColors.surface, r: 22),
-                child: Row(children: [
-                  Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                        color: AppColors.greenSoft,
-                        borderRadius: BorderRadius.circular(14)),
-                    child: const Icon(Icons.storefront_rounded,
-                        color: AppColors.green),
+                  subtitle:
+                      'Jarak jalan kaki dari lokasimu sekarang',
+                  trailingIcon: Icons.explore_outlined,
+                ),
+                gap(12),
+                ...rp.nearby.map(
+                  (r) => _nearbyTile(context, r),
+                ),
+                gap(6),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: box(
+                    color: AppColors.surface,
+                    r: 22,
                   ),
-                  gapW(12),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Punya Warung Makan di Ternate?',
-                          style: ts(14, w: FontWeight.w800)),
-                      Text('Daftarkan mejamu di MakanKuy gratis',
-                          style: ts(12, c: AppColors.muted)),
-                    ]),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: AppColors.greenSoft,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Icon(
+                          Icons.storefront_rounded,
+                          color: AppColors.green,
+                        ),
+                      ),
+                      gapW(12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Punya Warung Makan di Ternate?',
+                              style: ts(14, w: FontWeight.w800),
+                            ),
+                            Text(
+                              'Daftarkan mejamu di MakanKuy gratis',
+                              style: ts(12, c: AppColors.muted),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () =>
+                            openRegisterRestaurant(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: AppColors.ink,
+                          shape: const StadiumBorder(),
+                        ),
+                        child: Text(
+                          'Gabung\nMitra',
+                          textAlign: TextAlign.center,
+                          style: ts(12, w: FontWeight.w800),
+                        ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                    onPressed: () => openRegisterRestaurant(context),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppColors.ink,
-                        shape: const StadiumBorder()),
-                    child: Text('Gabung\nMitra',
-                        textAlign: TextAlign.center,
-                        style: ts(12, w: FontWeight.w800)),
-                  ),
-                ]),
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

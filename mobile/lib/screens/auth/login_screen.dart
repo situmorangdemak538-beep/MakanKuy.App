@@ -41,13 +41,27 @@ class _LoginScreenState extends State<LoginScreen> {
   }
  
   Future<void> _submit() async {
-    if (!_form.currentState!.validate()) return;
-    final auth = context.read<AuthProvider>();
-    // Nanti: server memeriksa apakah akun ini benar-benar punya peran yang dipilih.
-    await auth.login(_email.text, _pass.text, _role);
-    if (!mounted) return;
+  if (!_form.currentState!.validate()) return;
+
+  final auth = context.read<AuthProvider>();
+
+  final success = await auth.login(
+    _email.text,
+    _pass.text,
+    _role,
+  );
+
+  if (!mounted) return;
+
+  if (success && auth.user != null) {
     goHome(context, auth.user!.role);
+  } else {
+    toast(
+      context,
+      auth.errorMessage ?? 'Login gagal. Periksa email dan kata sandi.',
+    );
   }
+}
  
   Widget _roleSelector() {
     return Container(
